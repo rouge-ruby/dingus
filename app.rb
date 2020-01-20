@@ -9,6 +9,7 @@ class Dingus < Sinatra::Base
   set :environment, Sprockets::Environment.new
 
   # append assets paths
+  environment.append_path "assets/images"
   environment.append_path "assets/stylesheets"
   environment.append_path "assets/javascripts"
 
