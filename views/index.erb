@@ -21,6 +21,17 @@
 
   <main>
     <section class="demo">
+      <form novalidate="novalidate" class="simple_form parse" action="/parses" accept-charset="UTF-8" data-remote="true" method="post">
+        <label for="parse_source">Try some code</label>
+        <div class="source">
+          <select name="parse[language]" id="parse_language">
+            <option value="abap">ABAP</option>
+            <option value="yaml">YAML</option>
+          </select>
+          <textarea id="parse_source" name="parse[source]"></textarea>
+        </div>
+        <pre id="parse_result" class="highlight" data-lang="matlab"><code></code></pre>
+      </form>
     </section>
     <section class="key-features">
       <ul>
