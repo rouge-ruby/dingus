@@ -1,5 +1,10 @@
 @charset 'utf-8';
 
+*, *::after, *::before {
+    box-sizing: inherit;
+}
+
+
 body {
     background-color: #FCFCFC;
     box-sizing: inherit;
@@ -17,6 +22,12 @@ header {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 4.5em;
+
+    &::after {
+        clear: both;
+        content: "";
+        display: table;
+    }
 
     h1 {
         background: transparent url("/assets/logo.svg") no-repeat center;
@@ -50,6 +61,12 @@ main {
     margin-right: auto;
     min-width: 920px;
     padding: 0 1.5em;
+
+    &::after {
+        clear: both;
+        content: "";
+        display: table;
+    }
 
     section.key-features {
         clear: both;
