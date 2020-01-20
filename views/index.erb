@@ -25,12 +25,13 @@
         <label for="parse_source">Try some code</label>
         <div class="source">
           <select name="parse[language]" id="parse_language">
-            <option value="abap">ABAP</option>
-            <option value="yaml">YAML</option>
+          <% demo.all_lexers.each do |lexer| %>
+            <option value="<%= lexer.tag %>" <%= "selected" if lexer == demo.lexer %>><%= lexer.title %></option>
+          <% end %>
           </select>
-          <textarea id="parse_source" name="parse[source]"></textarea>
+          <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
         </div>
-        <pre id="parse_result" class="highlight" data-lang="matlab"><code></code></pre>
+        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code></code></pre>
       </form>
     </section>
     <section class="key-features">
@@ -38,7 +39,7 @@
         <li class="languages">
           <h3>Plenty of Languages</h3>
           <article>
-            <p>Rouge supports 181 languages and counting, including Ruby, JavaScript, Swift, Go, C++, and Haskell. Our <a target="_blank" href="https://github.com/jneen/rouge/graphs/contributors">contributors</a> are adding more languages all the time.</p>
+            <p>Rouge supports <%= demo.lexer_count %> languages and counting, including Ruby, JavaScript, Swift, Go, C++, and Haskell. Our <a target="_blank" href="https://github.com/jneen/rouge/graphs/contributors">contributors</a> are adding more languages all the time.</p>
           </article>
         </li>
         <li class="parsing">
@@ -60,7 +61,7 @@
   <footer>
     Rouge development by <a target="_blank" href="http://jneen.net">Jeanine Adkisson</a>.
     Website created by <a target="_blank" href="http://edwardloveall.com">Edward Loveall</a>.
-    Using Rouge version 3.15.0
+    Using Rouge version <%= demo.version %>
   </footer>
 </body>
 </html>
