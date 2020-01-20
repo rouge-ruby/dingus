@@ -31,7 +31,7 @@
           </select>
           <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
         </div>
-        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code></code></pre>
+        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.parsed %></code></pre>
       </form>
     </section>
     <section class="key-features">

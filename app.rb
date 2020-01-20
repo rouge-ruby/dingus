@@ -19,6 +19,11 @@ class Demo
     all_lexers.count
   end
 
+  def parsed(text = nil)
+    text = source if text.nil?
+    Rouge.highlight text, lexer, 'html'
+  end
+
   def select_lexer(lang)
     return all_lexers.sample if lang.nil?
 
