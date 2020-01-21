@@ -75,6 +75,15 @@ main {
         display: table;
     }
 
+    section.message {
+        background-color: #fff5f5;
+        border: 1px solid #fc8181;
+        color: #c53030;
+        display: none;
+        margin-bottom: 2.5em;
+        padding: 1em;
+    }
+
     section.demo {
         &::after {
             clear: both;

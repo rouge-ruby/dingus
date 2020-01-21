@@ -64,7 +64,8 @@ class Dingus < Sinatra::Base
   end
 
   post '/parse' do
-    puts request.content_length
+    halt 413 if request.content_length.to_i > 2000
+
     payload = JSON.parse request.body.read
     halt unless payload["lang"]
 
