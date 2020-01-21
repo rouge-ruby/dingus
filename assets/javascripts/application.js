@@ -28,10 +28,10 @@ const update = function(endpoint, payload) {
 
   request.onreadystatechange = function () {
     if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-      flash.style.display = "none";
       const data = JSON.parse(request.responseText);
       source.value = data.source;
       result.innerHTML = "<code>" + data.result + "</code>";
+      flash.style.display = "none";
     } else if (request.readyState === XMLHttpRequest.DONE && request.status === 413) {
       flash.innerHTML = error_message_length;
       flash.style.display = "block";
