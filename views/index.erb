@@ -21,7 +21,7 @@
 
   <main>
     <section class="demo">
-      <form novalidate="novalidate" class="simple_form parse" action="/parses" accept-charset="UTF-8" data-remote="true" method="post">
+      <form novalidate="novalidate" class="simple_form parse" action="/parse" accept-charset="UTF-8" data-remote="true" method="post">
         <label for="parse_source">Try some code</label>
         <div class="source">
           <select name="parse[language]" id="parse_language">
@@ -31,7 +31,7 @@
           </select>
           <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
         </div>
-        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.parsed %></code></pre>
+        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.result %></code></pre>
       </form>
     </section>
     <section class="key-features">
@@ -63,5 +63,6 @@
     Website created by <a target="_blank" href="https://edwardloveall.com">Edward Loveall</a>.
     Using Rouge version <%= demo.version %>
   </footer>
+  <script src="/assets/application.js"></script>
 </body>
 </html>

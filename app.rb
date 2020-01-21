@@ -1,3 +1,4 @@
+require 'json'
 require 'rouge'
 require 'sinatra/base'
 require 'sprockets'
@@ -5,10 +6,11 @@ require 'uglifier'
 require 'sassc'
 
 class Demo
-  attr_reader :lexer
+  attr_reader :lexer, :source
 
-  def initialize(lang = nil)
-    @lexer = select_lexer lang
+  def initialize(lang = nil, source = nil)
+    @lexer = set_lexer lang
+    @source = set_source source
   end
 
   def all_lexers
@@ -19,23 +21,22 @@ class Demo
     all_lexers.count
   end
 
-  def parsed(text = nil)
-    text = source if text.nil?
-    Rouge.highlight text, lexer, 'html'
+  def result
+    Rouge.highlight source, lexer, 'html'
   end
 
-  def select_lexer(lang)
+  def version
+    Rouge.version
+  end
+
+  private def set_lexer(lang)
     return all_lexers.sample if lang.nil?
 
     Rouge::Lexer.find(lang) || all_lexers.sample
   end
 
-  def source
-    lexer.demo
-  end
-
-  def version
-    Rouge.version
+  private def set_source(source)
+    source || lexer.demo
   end
 end
 
@@ -49,7 +50,7 @@ class Dingus < Sinatra::Base
   environment.append_path "assets/javascripts"
 
   # compress assets
-  environment.js_compressor  = :uglify
+  environment.js_compressor  = Uglifier.new(harmony: true)
   environment.css_compressor = :scssc
 
   # get assets
@@ -60,5 +61,15 @@ class Dingus < Sinatra::Base
 
   get '/' do
     erb :index, :locals => { :demo => Demo.new }
+  end
+
+  post '/parse' do
+    puts request.content_length
+    payload = JSON.parse request.body.read
+    halt unless payload["lang"]
+
+    demo = Demo.new payload["lang"], payload["source"]
+    content_type :json
+    { :source => demo.source, :result => demo.result }.to_json
   end
 end
