@@ -1,0 +1,70 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="ROBOTS" content="NOODP">
+  <meta name="viewport" content="width=920">
+  <title>Rouge</title>
+  <link rel="stylesheet" type="text/css" media="all" href="https://necolas.github.io/normalize.css/latest/normalize.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway:800,500|Source+Code+Pro:400,700">
+  <link rel="stylesheet" type="text/css" media="all" href="/assets/application.css">
+  <link rel="author" href="humans.txt">
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+</head>
+<body class="home_pages home_pages-show">
+  <header>
+    <h1 class="main">
+      <a href="/">{ Rouge }</a>
+    </h1>
+    <h2>An elegant, extendable code highlighter written in pure Ruby.</h2>
+    <h4>Available on <a href="https://github.com/rouge-ruby/rouge">GitHub</a></h4>
+  </header>
+
+  <main>
+    <section class="message" id="flash_message">
+    </section>
+    <section class="demo">
+      <form novalidate="novalidate" class="simple_form parse" action="/parse" accept-charset="UTF-8" data-remote="true" method="post">
+        <label for="parse_source">Try some code</label>
+        <div class="source">
+          <select name="parse[language]" id="parse_language">
+          <% demo.all_lexers.each do |lexer| %>
+            <option value="<%= lexer.tag %>" <%= "selected" if lexer == demo.lexer %>><%= lexer.title %></option>
+          <% end %>
+          </select>
+          <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
+        </div>
+        <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.result %></code></pre>
+      </form>
+    </section>
+    <section class="key-features">
+      <ul>
+        <li class="languages">
+          <h3>Plenty of Languages</h3>
+          <article>
+            <p>Rouge supports <%= demo.lexer_count %> languages and counting, including Ruby, JavaScript, Swift, Go, C++, and Haskell. Our <a target="_blank" href="https://github.com/jneen/rouge/graphs/contributors">contributors</a> are adding more languages all the time.</p>
+          </article>
+        </li>
+        <li class="parsing">
+          <h3>Language Parsing</h3>
+          <article>
+            <p>Rouge aims for the highest quality lexing in all its supported languages, even with strange features and odd corner cases. Try it above and see for yourself!</p>
+          </article>
+        </li>
+        <li class="pygments">
+          <h3>Pygments Compatible</h3>
+          <article>
+            <p>Rouge themes are 100% compatible with <a target="_blank" href="https://pygments.org">Pygments</a>' stylesheets. No need to remake your theme, and no need to spawn a Python process either. Rouge is made in Ruby.</p>
+          </article>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Rouge development by <a target="_blank" href="https://jneen.net">Jeanine Adkisson</a>.
+    Website created by <a target="_blank" href="https://edwardloveall.com">Edward Loveall</a>.
+    Using Rouge version <%= demo.version %>
+  </footer>
+  <script src="/assets/application.js"></script>
+</body>
+</html>
