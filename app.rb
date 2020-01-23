@@ -1,10 +1,11 @@
-require 'cgi'
+require 'base64'
 require 'json'
 require 'rouge'
 require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
 require 'sassc'
+require 'uri'
 
 require_relative "lib/coder"
 
@@ -66,20 +67,39 @@ class Dingus < Sinatra::Base
     erb :index, :locals => { :demo => Demo.new }
   end
 
-  post '/parse' do
-    halt 413 if request.content_length.to_i > 2000
+  post '/parse', :provides => :json do
+    case request.content_type
+    when "application/json"
+      halt 413 if request.content_length.to_i > 2000
 
-    payload = JSON.parse request.body.read
-    halt unless payload["lang"]
+      payload = JSON.parse request.body.read
+      halt unless payload["lang"]
 
-    demo = Demo.new payload["lang"], payload["source"]
-    content_type :json
-    { :source => demo.source, :result => demo.result }.to_json
+      demo = Demo.new payload["lang"], payload["source"]
+      content_type :json
+      { :source => demo.source, :result => demo.result }.to_json
+    else
+      halt 400 if params["parse"].nil?
+      halt 413 if params["parse"]["source"].length > 1500
+
+      lang = params["parse"]["language"]
+      source = params["parse"]["source"]
+      halt 400 if lang.nil? || source.nil?
+
+      lang = URI.encode_www_form_component lang
+      source = Base64.urlsafe_encode64 source, padding: false
+      redirect to("/" + lang + "/" + source)
+    end
   end
 
-  get '/:lang/:source' do
-    lang = CGI.unescape params["lang"]
-    source = Coder.decode CGI.unescape(params["source"])
+  get '/:lang/:mode?' do
+    lang = URI.decode_www_form_component params["lang"]
+    erb :index, :locals => { :demo => Demo.new(lang) }
+  end
+
+  get '/:lang/*' do
+    lang = URI.decode_www_form_component params["lang"]
+    source = Base64.urlsafe_decode64(params["splat"][0])
     erb :index, :locals => { :demo => Demo.new(lang, source) }
   end
 end

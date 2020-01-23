@@ -11,6 +11,7 @@ const flash  = document.getElementById("flash_message");
 const lang   = document.getElementById("parse_language");
 const source = document.getElementById("parse_source");
 const result = document.getElementById("parse_result");
+const save   = document.getElementById("save_button");
 
 // Submit function
 let submitTimer;
@@ -47,9 +48,14 @@ const update = function(endpoint, payload) {
 // Reset on language change
 lang.addEventListener("change", function(e) {
   submit("/parse", { lang: lang.value });
+  history.pushState({}, "", "/" + encodeURIComponent(lang.value) + "/");
 });
 
 // Update on source change
 source.addEventListener("input", function(e) {
   submit("/parse", { lang: lang.value, source: source.value });
+  draft_path = "/" + encodeURIComponent(lang.value) + "/draft";
+  if (window.location.pathname !== draft_path) {
+    history.pushState({}, "", draft_path);
+  }
 });
