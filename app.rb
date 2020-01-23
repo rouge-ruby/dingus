@@ -64,7 +64,7 @@ class Dingus < Sinatra::Base
     erb :index, :locals => { :demo => Demo.new }
   end
 
-  post '/parse', :provides => :json do
+  post '/parse' do
     case request.content_type
     when "application/json"
       halt 413 if request.content_length.to_i > 2000
