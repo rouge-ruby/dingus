@@ -7,8 +7,6 @@ require 'uglifier'
 require 'sassc'
 require 'uri'
 
-require_relative "lib/coder"
-
 class Demo
   attr_reader :lexer, :source
 
