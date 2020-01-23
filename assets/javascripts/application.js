@@ -12,6 +12,7 @@ const lang   = document.getElementById("parse_language");
 const source = document.getElementById("parse_source");
 const result = document.getElementById("parse_result");
 const save   = document.getElementById("save_button");
+const tip    = document.getElementById("save_message");
 
 // Submit function
 let submitTimer;
@@ -93,4 +94,6 @@ save.addEventListener("click", function(e) {
   let save_path = "/" + encodeURIComponent(lang.value) + "/" + utoa(source.value);
   history.pushState({}, "", save_path);
   copyToClipboard(window.location);
+  tip.innerHTML = "Link to snippet copied!";
+  tip.style.display = "inline-block";
 });

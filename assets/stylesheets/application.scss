@@ -91,6 +91,15 @@ main {
             display: table;
         }
 
+        #save_message {
+            background: #fefcbf;
+            display: none;
+            font-weight: 500;
+            margin-left: 2em;
+            padding: 0.5em 1em;
+            vertical-align: middle;
+        }
+
         .source {
             display: block;
             float: left;
