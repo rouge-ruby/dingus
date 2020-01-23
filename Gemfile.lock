@@ -4,13 +4,11 @@ GEM
     concurrent-ruby (1.1.5)
     execjs (2.7.0)
     ffi (1.12.1)
-    minitest (5.14.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     rack (2.1.1)
     rack-protection (2.0.8.1)
       rack
-    rake (13.0.1)
     rouge (3.15.0)
     ruby2_keywords (0.0.2)
     sassc (2.2.1)
@@ -31,8 +29,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  minitest
-  rake
   rouge
   sassc (~> 2.0)
   sinatra (~> 2.0)
