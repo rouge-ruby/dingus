@@ -1,9 +1,12 @@
+require 'cgi'
 require 'json'
 require 'rouge'
 require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
 require 'sassc'
+
+require_relative "lib/coder"
 
 class Demo
   attr_reader :lexer, :source
@@ -72,5 +75,11 @@ class Dingus < Sinatra::Base
     demo = Demo.new payload["lang"], payload["source"]
     content_type :json
     { :source => demo.source, :result => demo.result }.to_json
+  end
+
+  get '/:lang/:source' do
+    lang = CGI.unescape params["lang"]
+    source = Coder.decode CGI.unescape(params["source"])
+    erb :index, :locals => { :demo => Demo.new(lang, source) }
   end
 end
