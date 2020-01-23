@@ -84,22 +84,21 @@ class Dingus < Sinatra::Base
       source = params["parse"]["source"]
       halt 400 if lang.nil? || source.nil?
 
-      lang = URI.encode_www_form_component lang
       source = Base64.urlsafe_encode64 source, padding: false
       redirect to("/" + lang + "/" + source)
     end
   end
 
-  get '/:lang/:mode?' do
-    lang = URI.decode_www_form_component params["lang"]
-    erb :index, :locals => { :demo => Demo.new(lang) }
-  end
+  get '/:lang/:source?' do
+    if params["source"].nil? || params["source"] == "draft"
+      erb :index, :locals => { :demo => Demo.new(params["lang"]) }
+    else
+      halt 413 if params["source"].length > 1500
 
-  get '/:lang/*' do
-    halt 413 if params["splat"][0].length > 1500
+      puts params["source"].inspect
 
-    lang = URI.decode_www_form_component params["lang"]
-    source = Base64.urlsafe_decode64(params["splat"][0])
-    erb :index, :locals => { :demo => Demo.new(lang, source) }
+      source = Base64.urlsafe_decode64 params["source"]
+      erb :index, :locals => { :demo => Demo.new(params["lang"], source) }
+    end
   end
 end
