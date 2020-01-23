@@ -5,7 +5,6 @@ require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
 require 'sassc'
-require 'uri'
 
 class Demo
   attr_reader :lexer, :source
