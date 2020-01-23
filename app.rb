@@ -96,6 +96,8 @@ class Dingus < Sinatra::Base
   end
 
   get '/:lang/*' do
+    halt 413 if params["splat"][0].length > 1500
+
     lang = URI.decode_www_form_component params["lang"]
     source = Base64.urlsafe_decode64(params["splat"][0])
     erb :index, :locals => { :demo => Demo.new(lang, source) }
