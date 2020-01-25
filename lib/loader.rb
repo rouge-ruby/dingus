@@ -58,12 +58,12 @@ class Loader
       #
       # The `rescue`s are for the cases where the lexer isn't defined in the current
       # version.
+      Rouge::Lexers::Gherkin.builtins rescue nil
       Rouge::Lexers::Lua.builtins rescue nil
+      Rouge::Lexers::Mathematica.builtins rescue nil
+      Rouge::Lexers::Matlab.builtins rescue nil
       Rouge::Lexers::PHP.builtins rescue nil
       Rouge::Lexers::VimL.keywords rescue nil
-      Rouge::Lexers::Gherkin.builtins rescue nil
-      Rouge::Lexers::Matlab.builtins rescue nil
-      Rouge::Lexers::Mathematica.builtins rescue nil
 
       Rouge.const_set(:Rouge, Rouge)
       Object.send(:remove_const, :Rouge)
