@@ -1,3 +1,4 @@
+require 'base64'
 require 'json'
 require 'rouge'
 require 'sinatra/base'
@@ -64,13 +65,39 @@ class Dingus < Sinatra::Base
   end
 
   post '/parse' do
-    halt 413 if request.content_length.to_i > 2000
+    case request.content_type
+    when "application/json"
+      halt 413 if request.content_length.to_i > 2000
 
-    payload = JSON.parse request.body.read
-    halt unless payload["lang"]
+      payload = JSON.parse request.body.read
+      halt unless payload["lang"]
 
-    demo = Demo.new payload["lang"], payload["source"]
-    content_type :json
-    { :source => demo.source, :result => demo.result }.to_json
+      demo = Demo.new payload["lang"], payload["source"]
+      content_type :json
+      { :source => demo.source, :result => demo.result }.to_json
+    else
+      halt 400 if params["parse"].nil?
+      halt 413 if params["parse"]["source"].length > 1500
+
+      lang = params["parse"]["language"]
+      source = params["parse"]["source"]
+      halt 400 if lang.nil? || source.nil?
+
+      source = Base64.urlsafe_encode64 source, padding: false
+      redirect to("/" + lang + "/" + source)
+    end
+  end
+
+  get '/:lang/:source?' do
+    if params["source"].nil? || params["source"] == "draft"
+      erb :index, :locals => { :demo => Demo.new(params["lang"]) }
+    else
+      halt 413 if params["source"].length > 1500
+
+      puts params["source"].inspect
+
+      source = Base64.urlsafe_decode64 params["source"]
+      erb :index, :locals => { :demo => Demo.new(params["lang"], source) }
+    end
   end
 end

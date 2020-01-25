@@ -91,12 +91,42 @@ main {
             display: table;
         }
 
+        #save_message {
+            background: #fefcbf;
+            display: none;
+            font-weight: 500;
+            margin-left: 2em;
+            padding: 0.5em 1em;
+            vertical-align: middle;
+        }
+
         .source {
             display: block;
             float: left;
             margin-right: 2.35765%;
             position: relative;
             width: 48.82117%;
+        }
+
+        button {
+            background-color: #ec627a;
+            border: 1px solid #e41e40;
+            border-radius: 3px;
+            color: #ffffff;;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            font-weight: bold;
+            line-height: 1;
+            padding: 0.75em 1em;
+            text-decoration: none;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        form {
+            margin-bottom: 0;
         }
 
         label {
@@ -257,4 +287,10 @@ a {
 
 input, label, select {
     display: block;
+}
+
+ul, ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }

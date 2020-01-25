@@ -34,6 +34,8 @@
           <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
         </div>
         <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.result %></code></pre>
+        <button id="save_button" name="save">Save this</button>
+        <div id="save_message"></div>
       </form>
     </section>
     <section class="key-features">
