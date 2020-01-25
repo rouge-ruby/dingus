@@ -50,21 +50,7 @@ class Loader
     MUTEX.synchronize do
       Object.send(:remove_const, :Rouge) rescue NameError
       load_silently id
-
-      # These need to be preloaded while the correct `Rouge` is in the global scope,
-      # because they assume the existence of a global `Rouge` object. In the future
-      # we'll handle these differently (i.e. with a yaml file, like the Apache lexer),
-      # so it won't be necessary to add to this list.
-      #
-      # The `rescue`s are for the cases where the lexer isn't defined in the current
-      # version.
-      Rouge::Lexers::Gherkin.builtins rescue nil
-      Rouge::Lexers::Lua.builtins rescue nil
-      Rouge::Lexers::Mathematica.builtins rescue nil
-      Rouge::Lexers::Matlab.builtins rescue nil
-      Rouge::Lexers::PHP.builtins rescue nil
-      Rouge::Lexers::VimL.keywords rescue nil
-
+      patch_load Rouge
       Rouge.const_set(:Rouge, Rouge)
       Object.send(:remove_const, :Rouge)
     end
@@ -75,6 +61,16 @@ class Loader
     $VERBOSE = nil
     Kernel.load(File.join(TMP_DIR, "rouge-#{id}", "lib/rouge.rb"))
     $VERBOSE = old_verbose
+  end
+
+  def self.patch_load(rouge)
+    rouge::Lexer.define_singleton_method(:load) do |filename|
+      Loader::MUTEX.synchronize do
+        Object.const_set(:Rouge, rouge)
+        super filename
+        Object.send(:remove_const, :Rouge)
+      end
+    end
   end
 
   def self.versions
