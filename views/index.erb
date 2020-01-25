@@ -20,7 +20,8 @@
   </header>
 
   <main>
-    <section class="message" id="flash_message">
+    <section class="message <% if flash %>show<% end %>" id="flash_message">
+      <%= flash %>
     </section>
     <section class="demo">
       <form novalidate="novalidate" class="simple_form parse" action="/parse" accept-charset="UTF-8" data-remote="true" method="post">

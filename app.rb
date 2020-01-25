@@ -49,7 +49,25 @@ class Demo
   end
 end
 
+class Message
+  MSG = {}
+
+  MSG[400] =
+    "<strong>Bad Input</strong>: The input that you submitted is invalid. Please
+    correct it and try again."
+
+  MSG[413] =
+    "<strong>Too Long</strong>: This form accepts a maximum of 1500 characters of text.
+    Please reduce the amount of text and try again."
+
+  def self.[](k)
+    MSG[k]
+  end
+end
+
 class Dingus < Sinatra::Base
+  enable :sessions
+
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
 
@@ -69,7 +87,9 @@ class Dingus < Sinatra::Base
   end
 
   get '/' do
-    erb :index, :locals => { :demo => Demo.new }
+    flash = Message[session[:error]]
+    session[:error] = nil
+    erb :index, :locals => { :demo => Demo.new, :flash => flash }
   end
 
   post '/parse' do
@@ -100,6 +120,8 @@ class Dingus < Sinatra::Base
   end
 
   get '/:ver/:lang/:source?' do
+    halt 400 unless params["ver"][0] == "v"
+
     if params["source"].nil? || params["source"] == "draft"
       demo = Demo.new params["ver"], params["lang"] rescue halt 400
       erb :index, :locals => { :demo => demo }
@@ -108,6 +130,17 @@ class Dingus < Sinatra::Base
       source = Base64.urlsafe_decode64 params["source"]
       demo = Demo.new params["ver"], params["lang"], source rescue halt 400
       erb :index, :locals => { :demo => demo }
+    end
+  end
+
+  error 400..500 do
+    case request.content_type
+    when "application/json"
+      content_type :json
+      { :message => Message[response.status] }.to_json
+    else
+      session[:error] = response.status
+      redirect to("/")
     end
   end
 end

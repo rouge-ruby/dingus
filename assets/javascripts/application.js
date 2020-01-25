@@ -1,15 +1,3 @@
-// Define error messages
-const error_message_input =
-  `<strong>Bad Input</strong>: The input that you submitted is invalid. Please
-  correct it and try again.`
-
-const error_message_length =
-  `<strong>Too Long</strong>: This form accepts a maximum of 1500 characters of text.
-  Please reduce the amount of text and try again.`
-
-const error_message_server =
-  `<strong>Server Error</strong>: A server error occurred while processing your input.`
-
 // Define elements
 const flash  = document.getElementById("flash_message");
 const lang   = document.getElementById("parse_language");
@@ -39,14 +27,10 @@ const update = function(endpoint, payload) {
       source.value = data.source;
       result.innerHTML = "<code>" + data.result + "</code>";
       flash.style.display = "none";
-    } else if (request.readyState === XMLHttpRequest.DONE && request.status === 400) {
-      flash.innerHTML = error_message_input
-      flash.style.display = "block";
-    } else if (request.readyState === XMLHttpRequest.DONE && request.status === 413) {
-      flash.innerHTML = error_message_length;
-      flash.style.display = "block";
-    } else if (request.readyState === XMLHttpRequest.DONE && request.status === 500) {
-      flash.innerHTML = error_message_server;
+      flash.innerHTML = "";
+    } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
+      const data = JSON.parse(request.responseText);
+      flash.innerHTML = data.message;
       flash.style.display = "block";
     }
   };
