@@ -33,6 +33,10 @@ class Loader
     end
   end
 
+  def self.latest
+    listing.first
+  end
+
   def self.listing
     path = File.join TMP_DIR, "available_versions"
     if File.exist?(path) && (Time.now - File.mtime(path) <= 86400)
@@ -47,6 +51,8 @@ class Loader
   end
 
   def self.load(id)
+    id = latest if id.nil?
+
     raise UnavailableVersion unless available?(id)
 
     fetch id unless dir?(id)
@@ -66,7 +72,7 @@ class Loader
     $VERBOSE = old_verbose
   end
 
-  def self.version(id)
+  def self.version(id = nil)
     cache[id] ||= load(id)
   end
 end

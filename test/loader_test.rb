@@ -38,6 +38,10 @@ class LoaderTest < Minitest::Test
     assert Dir.exist?(gem_path)
   end
 
+  def test_latest
+    assert_equal "3.15.0", Loader.latest
+  end
+
   def test_listing(ver = "0.0.1")
     result = Loader.listing
     assert_equal Array, result.class
