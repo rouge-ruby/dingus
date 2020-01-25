@@ -26,12 +26,12 @@ const update = function(endpoint, payload) {
       const data = JSON.parse(request.responseText);
       source.value = data.source;
       result.innerHTML = "<code>" + data.result + "</code>";
-      flash.style.display = "none";
+      flash.classList.remove("show");
       flash.innerHTML = "";
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
-      flash.style.display = "block";
+      flash.classList.add("show");
     }
   };
 
