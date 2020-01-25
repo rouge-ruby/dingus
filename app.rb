@@ -10,8 +10,8 @@ require_relative 'lib/loader'
 class Demo
   attr_reader :rouge, :lexer, :source
 
-  def initialize(lang = nil, source = nil)
-    @rouge = Loader.get :latest
+  def initialize(ver = :latest, lang = nil, source = nil)
+    @rouge = set_version ver
     @lexer = set_lexer lang
     @source = set_source source
   end
@@ -30,6 +30,12 @@ class Demo
 
   def version
     rouge.version
+  end
+
+  private def set_version(ver)
+    ver = (ver.is_a?(String) && ver[0] == "v") ? ver.slice(1..-1) : :latest
+
+    Loader.get ver
   end
 
   private def set_lexer(lang)
@@ -72,34 +78,36 @@ class Dingus < Sinatra::Base
       halt 413 if request.content_length.to_i > 2000
 
       payload = JSON.parse request.body.read
-      halt unless payload["lang"]
+      halt 400 unless payload["ver"] && payload["lang"]
 
-      demo = Demo.new payload["lang"], payload["source"]
+      demo = Demo.new payload["ver"],
+                      payload["lang"],
+                      payload["source"] rescue halt 400
       content_type :json
       { :source => demo.source, :result => demo.result }.to_json
     else
       halt 400 if params["parse"].nil?
       halt 413 if params["parse"]["source"].length > 1500
 
+      ver = params["parse"]["version"]
       lang = params["parse"]["language"]
       source = params["parse"]["source"]
-      halt 400 if lang.nil? || source.nil?
+      halt 400 if ver.nil? || lang.nil? || source.nil?
 
       source = Base64.urlsafe_encode64 source, padding: false
       redirect to("/" + lang + "/" + source)
     end
   end
 
-  get '/:lang/:source?' do
+  get '/:ver/:lang/:source?' do
     if params["source"].nil? || params["source"] == "draft"
-      erb :index, :locals => { :demo => Demo.new(params["lang"]) }
+      demo = Demo.new params["ver"], params["lang"] rescue halt 400
+      erb :index, :locals => { :demo => demo }
     else
       halt 413 if params["source"].length > 1500
-
-      puts params["source"].inspect
-
       source = Base64.urlsafe_decode64 params["source"]
-      erb :index, :locals => { :demo => Demo.new(params["lang"], source) }
+      demo = Demo.new params["ver"], params["lang"], source rescue halt 400
+      erb :index, :locals => { :demo => demo }
     end
   end
 end
