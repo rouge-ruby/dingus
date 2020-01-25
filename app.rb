@@ -7,6 +7,8 @@ require 'uglifier'
 
 require_relative 'lib/loader'
 
+Loader.get :latest
+
 class Demo
   attr_reader :rouge, :lexer, :source
 

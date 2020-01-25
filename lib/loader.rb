@@ -34,6 +34,7 @@ class Loader
   end
 
   def self.get(id)
+    id = latest if id == :latest
     cache[id] ||= load(id)
   end
 
@@ -42,8 +43,6 @@ class Loader
   end
 
   def self.load(id)
-    id = latest if id == :latest
-
     raise UnavailableVersion unless available?(id)
 
     fetch id unless dir?(id)
@@ -65,7 +64,7 @@ class Loader
 
   def self.versions
     path = File.join TMP_DIR, "available_versions"
-    if File.exist?(path) && (Time.now - File.mtime(path) <= 86400)
+    if File.exist?(path) && (Time.now - File.mtime(path) < 86400)
       version_nums = (defined? @versions) ? @versions : File.readlines(path, chomp: true)
     else
       response = %x(gem query --versions --all -r -e rouge)
