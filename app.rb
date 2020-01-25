@@ -1,21 +1,23 @@
 require 'base64'
 require 'json'
-require 'rouge'
 require 'sassc'
 require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
 
+require_relative 'lib/loader'
+
 class Demo
-  attr_reader :lexer, :source
+  attr_reader :rouge, :lexer, :source
 
   def initialize(lang = nil, source = nil)
+    @rouge = Loader.get :latest
     @lexer = set_lexer lang
     @source = set_source source
   end
 
   def all_lexers
-    Rouge::Lexer.all.sort_by(&:tag)
+    rouge::Lexer.all.sort_by(&:tag)
   end
 
   def lexer_count
@@ -23,17 +25,17 @@ class Demo
   end
 
   def result
-    Rouge.highlight source, lexer, 'html'
+    rouge.highlight source, lexer, 'html'
   end
 
   def version
-    Rouge.version
+    rouge.version
   end
 
   private def set_lexer(lang)
     return all_lexers.sample if lang.nil?
 
-    Rouge::Lexer.find(lang) || all_lexers.sample
+    rouge::Lexer.find(lang) || all_lexers.sample
   end
 
   private def set_source(source)
