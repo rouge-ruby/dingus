@@ -1,10 +1,10 @@
 require 'base64'
 require 'json'
 require 'rouge'
+require 'sassc'
 require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
-require 'sassc'
 
 class Demo
   attr_reader :lexer, :source
