@@ -9,3 +9,8 @@ gem 'sinatra',  '~>2.0'
 gem 'sprockets', '~>4.0'
 gem 'uglifier', '~>4.0'
 gem 'sassc', '~>2.0'
+
+# Testing
+gem 'rake'
+gem 'minitest'
+gem 'm'
