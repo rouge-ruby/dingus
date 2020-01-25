@@ -42,18 +42,6 @@ class LoaderTest < Minitest::Test
     assert_equal "3.15.0", Loader.latest
   end
 
-  def test_listing(ver = "0.0.1")
-    result = Loader.listing
-    assert_equal Array, result.class
-    assert_equal ver, result.last
-  end
-
-  def test_listing_with_file
-    listing_path = File.join Loader::TMP_DIR, "available_versions"
-    File.write listing_path, "0.0.3\n0.0.2"
-    test_listing "0.0.2"
-  end
-
   def test_load_with_valid_id
     rouge = Loader.load "1.1.0"
     assert_equal "1.1.0", rouge.version
@@ -61,5 +49,17 @@ class LoaderTest < Minitest::Test
 
   def test_load_with_invalid_id
     assert_raises(Loader::UnavailableVersion) { Loader.load("0") }
+  end
+
+  def test_versions(ver = "0.0.1")
+    result = Loader.versions
+    assert_equal Array, result.class
+    assert_equal ver, result.last
+  end
+
+  def test_versions_with_file
+    versions_path = File.join Loader::TMP_DIR, "available_versions"
+    File.write versions_path, "0.0.3\n0.0.2"
+    test_versions "0.0.2"
   end
 end

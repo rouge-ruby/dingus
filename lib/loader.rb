@@ -10,7 +10,7 @@ class Loader
 
   def self.available?(id)
     return false if id < "1.1.0"
-    listing.include? id
+    versions.include? id
   end
 
   def self.cache
@@ -33,25 +33,16 @@ class Loader
     end
   end
 
-  def self.latest
-    listing.first
+  def self.get(id)
+    cache[id] ||= load(id)
   end
 
-  def self.listing
-    path = File.join TMP_DIR, "available_versions"
-    if File.exist?(path) && (Time.now - File.mtime(path) <= 86400)
-      version_nums = (defined? @listing) ? @listing : File.readlines(path, chomp: true)
-    else
-      response = %x(gem query --versions --all -r -e rouge)
-      version_nums = response.scan(/\d+\.\d+\.\d+/)
-      File.write path, version_nums.join("\n")
-    end
-
-    @listing = version_nums
+  def self.latest
+    versions.first
   end
 
   def self.load(id)
-    id = latest if id.nil?
+    id = latest if id == :latest
 
     raise UnavailableVersion unless available?(id)
 
@@ -72,7 +63,16 @@ class Loader
     $VERBOSE = old_verbose
   end
 
-  def self.version(id = nil)
-    cache[id] ||= load(id)
+  def self.versions
+    path = File.join TMP_DIR, "available_versions"
+    if File.exist?(path) && (Time.now - File.mtime(path) <= 86400)
+      version_nums = (defined? @versions) ? @versions : File.readlines(path, chomp: true)
+    else
+      response = %x(gem query --versions --all -r -e rouge)
+      version_nums = response.scan(/\d+\.\d+\.\d+/)
+      File.write path, version_nums.join("\n")
+    end
+
+    @versions = version_nums
   end
 end
