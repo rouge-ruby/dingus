@@ -8,58 +8,58 @@ class Loader
 
   Bundler.mkdir_p TMP_DIR
 
-  def self.available?(id)
-    return false if id < "1.1.0"
-    versions.include? id
+  def self.available?(ver)
+    return false if ver < "1.1.0"
+    versions.include? ver
   end
 
   def self.cache
     @cache ||= {}
   end
 
-  def self.dir(id)
-    File.join TMP_DIR, id
+  def self.dir(ver)
+    File.join TMP_DIR, ver
   end
 
-  def self.dir?(id)
-    Dir.exist? dir(id)
+  def self.dir?(ver)
+    Dir.exist? dir(ver)
   end
 
-  def self.fetch(id)
+  def self.fetch(ver)
     Dir.chdir(TMP_DIR) do
-      %x(gem fetch rouge -v #{id})
-      %x(gem unpack rouge-#{id}.gem)
-      File.delete "rouge-#{id}.gem"
+      %x(gem fetch rouge -v #{ver})
+      %x(gem unpack rouge-#{ver}.gem)
+      File.delete "rouge-#{ver}.gem"
     end
   end
 
-  def self.get(id)
-    id = latest if id == :latest
-    cache[id] ||= load(id)
+  def self.get(ver)
+    ver = latest if ver == :latest
+    cache[ver] ||= load(ver)
   end
 
   def self.latest
     versions.first
   end
 
-  def self.load(id)
-    raise UnavailableVersion unless available?(id)
+  def self.load(ver)
+    raise UnavailableVersion unless available?(ver)
 
-    fetch id unless dir?(id)
+    fetch ver unless dir?(ver)
 
     MUTEX.synchronize do
       Object.send(:remove_const, :Rouge) rescue NameError
-      load_silently id
+      load_silently ver
       patch_load Rouge
       Rouge.const_set(:Rouge, Rouge)
       Object.send(:remove_const, :Rouge)
     end
   end
 
-  def self.load_silently(id)
+  def self.load_silently(ver)
     old_verbose = $VERBOSE
     $VERBOSE = nil
-    Kernel.load(File.join(TMP_DIR, "rouge-#{id}", "lib/rouge.rb"))
+    Kernel.load(File.join(TMP_DIR, "rouge-#{ver}", "lib/rouge.rb"))
     $VERBOSE = old_verbose
   end
 
