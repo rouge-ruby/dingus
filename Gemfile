@@ -12,5 +12,4 @@ gem 'uglifier', '~>4.0'
 group :development do
   gem 'm', '~>1.0'
   gem 'minitest', '~> 5.0'
-  gem 'rake', '~> 13.0'
 end
