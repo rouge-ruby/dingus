@@ -15,7 +15,6 @@ GEM
     rack-protection (2.0.8.1)
       rack
     rake (13.0.1)
-    rouge (3.15.0)
     ruby2_keywords (0.0.2)
     sassc (2.2.1)
       ffi (~> 1.9)
@@ -35,14 +34,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  m
-  minitest
-  rake
-  rouge
+  m (~> 1.0)
+  minitest (~> 5.0)
+  rake (~> 13.0)
   sassc (~> 2.0)
   sinatra (~> 2.0)
   sprockets (~> 4.0)
   uglifier (~> 4.0)
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
