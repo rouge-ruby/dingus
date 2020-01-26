@@ -1,9 +1,9 @@
-require "thread"
+require "monitor"
 
 class Loader
   class UnavailableVersion < StandardError; end
 
-  MUTEX = Mutex.new
+  LOAD_LOCK = Monitor.new
   TMP_DIR = ENV["ROUGE_VER_DIR"] || File.join(Bundler.root, "tmp", "rouge")
 
   Bundler.mkdir_p TMP_DIR
@@ -47,7 +47,7 @@ class Loader
 
     fetch ver unless dir?(ver)
 
-    MUTEX.synchronize do
+    LOAD_LOCK.synchronize do
       Object.send(:remove_const, :Rouge) rescue NameError
       load_silently ver
       patch_load Rouge
@@ -65,7 +65,7 @@ class Loader
 
   def self.patch_load(rouge)
     rouge::Lexer.define_singleton_method(:load) do |filename|
-      Loader::MUTEX.synchronize do
+      Loader::LOAD_LOCK.synchronize do
         Object.const_set(:Rouge, rouge)
         super filename
         Object.send(:remove_const, :Rouge)
