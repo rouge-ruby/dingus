@@ -1,15 +1,8 @@
-// Define error messages
-const error_message_length =
-  `<strong>Too Long</strong>: This form accepts a maximum of 1500 characters of text.
-  Please reduce the amount of text and try again.`
-
-const error_message_server =
-  `<strong>Server Error</strong>: A server error occurred while processing your input.`
-
 // Define elements
 const flash  = document.getElementById("flash_message");
 const lang   = document.getElementById("parse_language");
 const source = document.getElementById("parse_source");
+const ver    = document.getElementById("parse_version");
 const result = document.getElementById("parse_result");
 const save   = document.getElementById("save_button");
 const tip    = document.getElementById("save_message");
@@ -33,13 +26,12 @@ const update = function(endpoint, payload) {
       const data = JSON.parse(request.responseText);
       source.value = data.source;
       result.innerHTML = "<code>" + data.result + "</code>";
-      flash.style.display = "none";
-    } else if (request.readyState === XMLHttpRequest.DONE && request.status === 413) {
-      flash.innerHTML = error_message_length;
-      flash.style.display = "block";
-    } else if (request.readyState === XMLHttpRequest.DONE && request.status === 500) {
-      flash.innerHTML = error_message_server;
-      flash.style.display = "block";
+      flash.classList.remove("show");
+      flash.innerHTML = "";
+    } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
+      const data = JSON.parse(request.responseText);
+      flash.innerHTML = data.message;
+      flash.classList.add("show");
     }
   };
 
@@ -48,14 +40,18 @@ const update = function(endpoint, payload) {
 
 // Reset on language change
 lang.addEventListener("change", function(e) {
-  submit("/parse", { lang: lang.value });
-  history.pushState({}, "", "/" + encodeURIComponent(lang.value) + "/");
+  submit("/parse", { ver: ver.value, lang: lang.value });
+  history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
+                            "/" + encodeURIComponent(lang.value) +
+                            "/");
 });
 
 // Update on source change
 source.addEventListener("input", function(e) {
-  submit("/parse", { lang: lang.value, source: source.value });
-  let draft_path = "/" + encodeURIComponent(lang.value) + "/draft";
+  submit("/parse", { ver: ver.value, lang: lang.value, source: source.value });
+  let draft_path = "/" + encodeURIComponent(ver.value) +
+                   "/" + encodeURIComponent(lang.value) +
+                   "/draft";
   if (window.location.pathname !== draft_path) {
     history.pushState({}, "", draft_path);
   }
@@ -91,7 +87,9 @@ const copyToClipboard = function(text) {
 // Save the snippet
 save.addEventListener("click", function(e) {
   e.preventDefault();
-  let save_path = "/" + encodeURIComponent(lang.value) + "/" + utoa(source.value);
+  let save_path = "/" + encodeURIComponent(ver.value) +
+                  "/" + encodeURIComponent(lang.value) +
+                  "/" + utoa(source.value);
   history.pushState({}, "", save_path);
   copyToClipboard(window.location);
   tip.innerHTML = "Link to snippet copied!";

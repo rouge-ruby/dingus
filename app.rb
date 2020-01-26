@@ -1,45 +1,15 @@
 require 'base64'
 require 'json'
-require 'rouge'
 require 'sassc'
 require 'sinatra/base'
 require 'sprockets'
 require 'uglifier'
 
-class Demo
-  attr_reader :lexer, :source
+require_relative 'lib/demo'
+require_relative 'lib/message'
 
-  def initialize(lang = nil, source = nil)
-    @lexer = set_lexer lang
-    @source = set_source source
-  end
-
-  def all_lexers
-    Rouge::Lexer.all.sort_by(&:tag)
-  end
-
-  def lexer_count
-    all_lexers.count
-  end
-
-  def result
-    Rouge.highlight source, lexer, 'html'
-  end
-
-  def version
-    Rouge.version
-  end
-
-  private def set_lexer(lang)
-    return all_lexers.sample if lang.nil?
-
-    Rouge::Lexer.find(lang) || all_lexers.sample
-  end
-
-  private def set_source(source)
-    source || lexer.demo
-  end
-end
+require_relative 'lib/loader'
+Loader.get :latest
 
 class Dingus < Sinatra::Base
   # initialize new sprockets environment
@@ -61,7 +31,8 @@ class Dingus < Sinatra::Base
   end
 
   get '/' do
-    erb :index, :locals => { :demo => Demo.new }
+    flash = Message[params["error"].to_i]
+    erb :index, :locals => { :demo => Demo.new, :flash => flash }
   end
 
   post '/parse' do
@@ -70,34 +41,48 @@ class Dingus < Sinatra::Base
       halt 413 if request.content_length.to_i > 2000
 
       payload = JSON.parse request.body.read
-      halt unless payload["lang"]
+      halt 400 unless payload["ver"] && payload["lang"]
 
-      demo = Demo.new payload["lang"], payload["source"]
+      demo = Demo.new payload["ver"],
+                      payload["lang"],
+                      payload["source"] rescue halt 400
       content_type :json
-      { :source => demo.source, :result => demo.result }.to_json
+      { :ver => demo.version, :source => demo.source, :result => demo.result }.to_json
     else
       halt 400 if params["parse"].nil?
       halt 413 if params["parse"]["source"].length > 1500
 
+      ver = params["parse"]["version"]
       lang = params["parse"]["language"]
       source = params["parse"]["source"]
-      halt 400 if lang.nil? || source.nil?
+      halt 400 if ver.nil? || lang.nil? || source.nil?
 
       source = Base64.urlsafe_encode64 source, padding: false
-      redirect to("/" + lang + "/" + source)
+      redirect to("/" + ver + "/" + lang + "/" + source)
     end
   end
 
-  get '/:lang/:source?' do
+  get '/:ver/:lang/:source?' do
+    halt 400 unless params["ver"][0] == "v"
+
     if params["source"].nil? || params["source"] == "draft"
-      erb :index, :locals => { :demo => Demo.new(params["lang"]) }
+      demo = Demo.new params["ver"], params["lang"] rescue halt 400
+      erb :index, :locals => { :demo => demo, :flash => nil }
     else
       halt 413 if params["source"].length > 1500
-
-      puts params["source"].inspect
-
       source = Base64.urlsafe_decode64 params["source"]
-      erb :index, :locals => { :demo => Demo.new(params["lang"], source) }
+      demo = Demo.new params["ver"], params["lang"], source rescue halt 400
+      erb :index, :locals => { :demo => demo, :flash => nil }
+    end
+  end
+
+  error 400..500 do
+    case request.content_type
+    when "application/json"
+      content_type :json
+      { :message => Message[response.status] }.to_json
+    else
+      redirect to("/?error=" + response.status.to_s)
     end
   end
 end
