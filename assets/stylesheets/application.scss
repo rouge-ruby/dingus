@@ -9,7 +9,6 @@
 html {
     box-sizing: border-box;
     min-height: 100%;
-    position: relative;
 }
 
 body {
@@ -21,14 +20,11 @@ body {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
-    margin: 0 0 4.8em;
 }
 
 header {
     max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 4.5em;
+    margin: 0 auto 4.5em;
 
     &::after {
         clear: both;
@@ -64,8 +60,7 @@ header {
 main {
     background-color: #FCFCFC;
     max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 4.5em;
     min-width: 920px;
     padding: 0 1.5em;
 
@@ -242,13 +237,16 @@ main {
 }
 
 footer {
-    bottom: 0px;
-    font-size: 0.8em;
-    left: 0px;
-    padding: 1.5em 0;
-    position: absolute;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 0 0 1.0em;
     text-align: center;
     width: 100%;
+
+    p {
+      font-size: 0.8em;
+      margin-bottom: 0.5em;
+    }
 }
 
 h1 {
