@@ -1,12 +1,17 @@
 source 'https://rubygems.org'
 
 # Framework
-gem 'sinatra',  '~>2.0'
+gem 'sinatra', '~>2.0', :require => 'sinatra/base'
 
 # Asset pipeline
 gem 'sassc', '~>2.0'
 gem 'sprockets', '~>4.0'
 gem 'uglifier', '~>4.0'
+
+# Database access
+gem 'hashids', '~>1.0'
+gem 'sequel', '~>5.0'
+gem 'sqlite3', '~>1.0'
 
 # Development and testing
 group :development do
