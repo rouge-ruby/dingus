@@ -1,11 +1,8 @@
-require 'base64'
-require 'json'
-require 'sassc'
-require 'sinatra/base'
-require 'sprockets'
-require 'uglifier'
+require 'bundler/setup'
+Bundler.require :default
 
 require_relative 'lib/demo'
+require_relative 'lib/legacy'
 require_relative 'lib/message'
 
 require_relative 'lib/loader'
@@ -33,6 +30,22 @@ class Dingus < Sinatra::Base
   get '/' do
     flash = Message[params["error"].to_i]
     erb :index, :locals => { :demo => Demo.new, :flash => flash }
+  end
+
+  get '/pastes/:paste' do
+    id = Legacy.hash_to_id params["paste"]
+    puts id
+
+    DB = Sequel.sqlite("legacy.sqlite") unless defined?(DB)
+    paste = DB[:pastes].where(:id => id)
+
+    ver = Loader.latest
+    lang = paste.get(:language)
+    source = paste.get(:source)
+
+    demo = Demo.new ver, lang, source
+    date = paste.get(:created_at).strftime("%b %e, %Y")
+    erb :paste, :locals => { :demo => demo, :date => date }
   end
 
   post '/parse' do
