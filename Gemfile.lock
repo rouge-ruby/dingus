@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     concurrent-ruby (1.1.5)
+    dotenv (2.7.5)
     execjs (2.7.0)
     ffi (1.12.1)
     hashids (1.0.5)
@@ -37,6 +38,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv (~> 2.0)
   hashids (~> 1.0)
   m (~> 1.0)
   minitest (~> 5.0)

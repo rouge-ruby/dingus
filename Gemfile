@@ -9,6 +9,7 @@ gem 'sprockets', '~>4.0'
 gem 'uglifier', '~>4.0'
 
 # Database access
+gem 'dotenv', '~>2.0'
 gem 'hashids', '~>1.0'
 gem 'sequel', '~>5.0'
 gem 'sqlite3', '~>1.0'
