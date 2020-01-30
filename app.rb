@@ -37,11 +37,11 @@ class Dingus < Sinatra::Base
     halt 400 unless paste
 
     ver = Loader.latest
-    lang = paste.get(:language)
-    source = paste.get(:source)
+    lang = paste[:language]
+    source = paste[:source]
 
     demo = Demo.new ver, lang, source
-    date = paste.get(:created_at).strftime("%b %e, %Y")
+    date = paste[:created_at].strftime("%b %e, %Y")
     erb :paste, :locals => { :demo => demo, :date => date }
   end
 

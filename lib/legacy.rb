@@ -1,18 +1,18 @@
+require "date"
+require "gdbm"
 require "hashids"
 require "lockbox"
-require "sqlite3"
-require "sequel"
 
 class Legacy
   class NotAHash < StandardError; end
 
   def self.db()
-    return @db if defined?(@db)
+    return @loaded if defined?(@loaded)
     lockbox = Lockbox.new(key: ENV["LOCKBOX_KEY"])
-    en_path = File.join(__dir__, "..", "db", "encrypted.sqlite")
-    de_path = File.join(__dir__, "..", "db", "decrypted.sqlite")
+    en_path = File.join(__dir__, "..", "db", "encrypted.db")
+    de_path = File.join(__dir__, "..", "db", "decrypted.db")
     File.binwrite(de_path, lockbox.decrypt(File.binread(en_path)))
-    @db = Sequel.sqlite de_path
+    @loaded = de_path
   end
 
   def self.hash_to_id(h)
@@ -26,8 +26,16 @@ class Legacy
   end
 
   def self.paste(h)
-    paste = db[:pastes].where(:id => hash_to_id(h))
-    (paste.count == 1) ? paste : nil
+    paste = GDBM.open(db, 0666, GDBM::READER) do |db|
+              db[hash_to_id(h).to_s]
+            end
+
+    return nil if paste.nil?
+
+    fields = paste.split("\t", 5)
+    { :id => fields[0].to_i,
+      :created_at => DateTime.parse(fields[1]), #, "%Y-%m-%d %H:%M:%S.%6N"),
+      :language => fields[3],
+      :source => fields[4] }
   end
 end
-

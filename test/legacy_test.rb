@@ -14,12 +14,13 @@ class LegacyTest < Minitest::Test
   end
 
   def test_database_opening
-    assert_equal "Sequel::SQLite::Database", Legacy.db.class.to_s
+    assert_equal "String", Legacy.db.class.to_s
   end
 
   def test_database_successful_retrieval
     res = Legacy.paste "4j"
-    assert_equal 1, res.get(:id)
+    assert_equal 1, res[:id]
+    assert_equal 1428722903, res[:created_at].to_time.to_i
   end
 
   def test_database_unsuccessful_retrieval
