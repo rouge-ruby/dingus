@@ -32,12 +32,9 @@ class Dingus < Sinatra::Base
     erb :index, :locals => { :demo => Demo.new, :flash => flash }
   end
 
-  get '/pastes/:paste' do
-    id = Legacy.hash_to_id params["paste"]
-    puts id
-
-    DB = Sequel.sqlite("legacy.sqlite") unless defined?(DB)
-    paste = DB[:pastes].where(:id => id)
+  get '/pastes/:id' do
+    paste = Legacy.paste params["id"]
+    halt 400 unless paste
 
     ver = Loader.latest
     lang = paste.get(:language)

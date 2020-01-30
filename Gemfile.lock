@@ -6,6 +6,7 @@ GEM
     execjs (2.7.0)
     ffi (1.12.1)
     hashids (1.0.5)
+    lockbox (0.3.1)
     m (1.5.1)
       method_source (>= 0.6.7)
       rake (>= 0.9.2.2)
@@ -40,6 +41,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv (~> 2.0)
   hashids (~> 1.0)
+  lockbox (~> 0.0)
   m (~> 1.0)
   minitest (~> 5.0)
   rake (~> 13.0)

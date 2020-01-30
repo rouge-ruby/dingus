@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
-require "fileutils"
 require "dotenv/load"
 
 require_relative "../lib/legacy"
@@ -12,6 +11,20 @@ class LegacyTest < Minitest::Test
 
   def teardown
     Legacy.instance_variables.each { |ivar| Legacy.remove_instance_variable ivar }
+  end
+
+  def test_database_opening
+    assert_equal "Sequel::SQLite::Database", Legacy.db.class.to_s
+  end
+
+  def test_database_successful_retrieval
+    res = Legacy.paste "4j"
+    assert_equal 1, res.get(:id)
+  end
+
+  def test_database_unsuccessful_retrieval
+    res = Legacy.paste "aaa"
+    assert_nil res
   end
 
   def test_hash_to_ids_with_valid_hash
