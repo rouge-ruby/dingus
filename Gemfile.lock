@@ -2,9 +2,11 @@ GEM
   remote: https://rubygems.org/
   specs:
     concurrent-ruby (1.1.5)
+    date (3.0.0)
     dotenv (2.7.5)
     execjs (2.7.0)
     ffi (1.12.1)
+    gdbm (2.1.0)
     hashids (1.0.5)
     lockbox (0.3.1)
     m (1.5.1)
@@ -37,7 +39,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  date (~> 3.0)
   dotenv (~> 2.0)
+  gdbm (~> 2.0)
   hashids (~> 1.0)
   lockbox (~> 0.0)
   m (~> 1.0)

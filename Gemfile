@@ -9,7 +9,9 @@ gem 'sprockets', '~>4.0'
 gem 'uglifier', '~>4.0'
 
 # Database access
+gem 'date', '~>3.0'
 gem 'dotenv', '~>2.0'
+gem 'gdbm', '~>2.0'
 gem 'hashids', '~>1.0'
 gem 'lockbox', '~>0.0'
 
