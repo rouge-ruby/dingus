@@ -34,7 +34,7 @@ class Legacy
 
     fields = paste.split("\t", 5)
     { :id => fields[0].to_i,
-      :created_at => DateTime.parse(fields[1]), #, "%Y-%m-%d %H:%M:%S.%6N"),
+      :created_at => DateTime.parse(fields[1]),
       :language => fields[3],
       :source => fields[4] }
   end
