@@ -1,3 +1,6 @@
+// Global variables
+let editing = false;
+
 // Define elements
 const flash  = document.getElementById("flash_message");
 const lang   = document.getElementById("parse_language");
@@ -40,8 +43,10 @@ const update = function(endpoint, payload, overwrite) {
 
 // Reset on language change
 lang.addEventListener("change", function(e) {
-  const payload = { ver: ver.value, lang: lang.value };
-  submit("/parse", payload, true);
+  (source.value === "") ? (editing = false) : null;
+  const content = editing ? source.value : null;
+  const payload = { ver: ver.value, lang: lang.value, source: content };
+  submit("/parse", payload, !editing);
   history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
                             "/" + encodeURIComponent(lang.value) +
                             "/");
@@ -49,6 +54,7 @@ lang.addEventListener("change", function(e) {
 
 // Update on source change
 source.addEventListener("input", function(e) {
+  editing = true;
   const payload = { ver: ver.value, lang: lang.value, source: source.value };
   submit("/parse", payload, false);
   let draft_path = "/" + encodeURIComponent(ver.value) +
