@@ -12,7 +12,7 @@
       </select>
       <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
     </div>
-    <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code><%= demo.result %></code></pre>
+    <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code id="parse_code"><%= demo.result %></code></pre>
     <button id="save_button" name="save">Save this</button>
     <div id="save_message"></div>
     <input type="hidden" id="parse_version" name="parse[version]" value="v<%= demo.version %>">

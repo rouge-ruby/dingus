@@ -7,6 +7,7 @@ const lang   = document.getElementById("parse_language");
 const source = document.getElementById("parse_source");
 const ver    = document.getElementById("parse_version");
 const result = document.getElementById("parse_result");
+const code   = document.getElementById("parse_code");
 const save   = document.getElementById("save_button");
 const tip    = document.getElementById("save_message");
 
@@ -36,7 +37,8 @@ const update = function(endpoint, payload, overwrite) {
       const data = JSON.parse(request.responseText);
       overwrite ? (source.value = data.source) : null;
       result.dataset.lang = payload.lang;
-      result.innerHTML = "<code>" + data.result + "</code>";
+      code.innerHTML = data.result;
+      code.scrollIntoView(false);
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
