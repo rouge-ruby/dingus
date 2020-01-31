@@ -9,6 +9,10 @@ require_relative 'lib/loader'
 Loader.get :latest
 
 class Dingus < Sinatra::Base
+  # Set maximum sizes
+  MAX_PATH_SIZE = 1900
+  MAX_BODY_SIZE = 1400
+
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
 
@@ -27,16 +31,26 @@ class Dingus < Sinatra::Base
     settings.environment.call(env)
   end
 
+  before do
+    halt 413 if request.path.length > MAX_PATH_SIZE ||
+                request.content_length.to_i > MAX_BODY_SIZE
+  end
+
   get '/' do
     flash = Message[params["error"].to_i]
     erb :index, :locals => { :demo => Demo.new, :flash => flash }
+  end
+
+  get '/message/:code' do
+    content_type :json
+    { :message => Message[params["code"].to_i] }.to_json
   end
 
   get '/pastes/:id' do
     paste = Legacy.paste params["id"]
     halt 400 unless paste
 
-    ver = Loader.latest
+    ver = "v" + Loader.latest
     lang = paste[:language]
     source = paste[:source]
 
@@ -48,19 +62,16 @@ class Dingus < Sinatra::Base
   post '/parse' do
     case request.content_type
     when "application/json"
-      halt 413 if request.content_length.to_i > 2000
-
       payload = JSON.parse request.body.read
-      halt 400 unless payload["ver"] && payload["lang"]
 
       demo = Demo.new payload["ver"],
                       payload["lang"],
                       payload["source"] rescue halt 400
+
       content_type :json
       { :ver => demo.version, :source => demo.source, :result => demo.result }.to_json
     else
       halt 400 if params["parse"].nil?
-      halt 413 if params["parse"]["source"].length > 1500
 
       ver = params["parse"]["version"]
       lang = params["parse"]["language"]
@@ -73,17 +84,14 @@ class Dingus < Sinatra::Base
   end
 
   get '/:ver/:lang/:source?' do
-    halt 400 unless params["ver"][0] == "v"
-
     if params["source"].nil? || params["source"] == "draft"
       demo = Demo.new params["ver"], params["lang"] rescue halt 400
-      erb :index, :locals => { :demo => demo, :flash => nil }
     else
-      halt 413 if params["source"].length > 1500
       source = Base64.urlsafe_decode64 params["source"]
       demo = Demo.new params["ver"], params["lang"], source rescue halt 400
-      erb :index, :locals => { :demo => demo, :flash => nil }
     end
+
+    erb :index, :locals => { :demo => demo, :flash => nil }
   end
 
   error 400..500 do

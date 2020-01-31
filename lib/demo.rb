@@ -1,4 +1,6 @@
 class Demo
+  class InvalidVersion < StandardError; end
+
   attr_reader :rouge, :lexer, :source
 
   def initialize(ver = :latest, lang = nil, source = nil)
@@ -24,9 +26,11 @@ class Demo
   end
 
   private def set_version(ver)
-    ver = (ver.is_a?(String) && ver[0] == "v") ? ver.slice(1..-1) : :latest
+    return Loader.get(ver) if ver == :latest
 
-    Loader.get ver
+    raise InvalidVersion unless ver.is_a?(String) && ver[0] == "v"
+
+    Loader.get ver.slice(1..-1)
   end
 
   private def set_lexer(lang)

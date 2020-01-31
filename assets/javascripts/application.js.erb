@@ -17,6 +17,12 @@ const submit = function(endpoint, payload, overwrite) {
   submitTimer = setTimeout(update, 500, endpoint, payload, overwrite);
 };
 
+// Clear flash message
+const clear_message = function() {
+  flash.classList.remove("show");
+  flash.innerHTML = "";
+};
+
 // Update function
 const update = function(endpoint, payload, overwrite) {
   let request = new XMLHttpRequest();
@@ -26,11 +32,11 @@ const update = function(endpoint, payload, overwrite) {
 
   request.onreadystatechange = function () {
     if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      clear_message();
       const data = JSON.parse(request.responseText);
       overwrite ? (source.value = data.source) : null;
+      result.dataset.lang = payload.lang;
       result.innerHTML = "<code>" + data.result + "</code>";
-      flash.classList.remove("show");
-      flash.innerHTML = "";
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
@@ -63,12 +69,36 @@ source.addEventListener("input", function(e) {
   if (window.location.pathname !== draft_path) {
     history.pushState({}, "", draft_path);
   }
+  if (source.value.length > <%= Dingus::MAX_BODY_SIZE %>) {
+    save.disabled = true;
+    save.classList.add("disabled");
+  } else {
+    save.disabled = false;
+    save.classList.remove("disabled");
+  }
 }, { capture: false, passive: true });
+
+const error_message = function(code) {
+  let request = new XMLHttpRequest();
+
+  request.open("GET", "/message/" + code);
+  request.setRequestHeader("Content-Type", "application/json");
+
+  request.onreadystatechange = function () {
+    if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      const data = JSON.parse(request.responseText);
+      flash.innerHTML = data.message;
+      flash.classList.add("show");
+    }
+  };
+
+  request.send();
+};
 
 // Allow encoding of Unicode characters
 const utoa = function(str) {
   return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
-}
+};
 
 // Copy to clipboard
 const copyToClipboard = function(text) {
@@ -90,16 +120,21 @@ const copyToClipboard = function(text) {
       document.body.removeChild(textarea);
     }
   }
-}
+};
 
 // Save the snippet
 save.addEventListener("click", function(e) {
   e.preventDefault();
-  let save_path = "/" + encodeURIComponent(ver.value) +
-                  "/" + encodeURIComponent(lang.value) +
-                  "/" + utoa(source.value);
-  history.pushState({}, "", save_path);
-  copyToClipboard(window.location);
-  tip.innerHTML = "Link to snippet copied!";
-  tip.style.display = "inline-block";
-});
+  if (source.value.length > <%= Dingus::MAX_BODY_SIZE %>) {
+    error_message(413);
+  } else {
+    clear_message();
+    let save_path = "/" + encodeURIComponent(ver.value) +
+                    "/" + encodeURIComponent(lang.value) +
+                    "/" + utoa(source.value);
+    history.pushState({}, "", save_path);
+    copyToClipboard(window.location);
+    tip.innerHTML = "Link to snippet copied!";
+    tip.style.display = "inline-block";
+  }
+}, { capture: false, passive: false });
