@@ -1,8 +1,10 @@
 /.bundle
+/.env
 /.ruby-version
 /.yardoc
 /_yardoc/
 /coverage/
+/db/decrypted.db
 /doc/
 /log/
 /pkg/

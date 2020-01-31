@@ -1,11 +1,8 @@
-require 'base64'
-require 'json'
-require 'sassc'
-require 'sinatra/base'
-require 'sprockets'
-require 'uglifier'
+require 'bundler/setup'
+Bundler.require :default
 
 require_relative 'lib/demo'
+require_relative 'lib/legacy'
 require_relative 'lib/message'
 
 require_relative 'lib/loader'
@@ -33,6 +30,19 @@ class Dingus < Sinatra::Base
   get '/' do
     flash = Message[params["error"].to_i]
     erb :index, :locals => { :demo => Demo.new, :flash => flash }
+  end
+
+  get '/pastes/:id' do
+    paste = Legacy.paste params["id"]
+    halt 400 unless paste
+
+    ver = Loader.latest
+    lang = paste[:language]
+    source = paste[:source]
+
+    demo = Demo.new ver, lang, source
+    date = paste[:created_at].strftime("%b %e, %Y")
+    erb :paste, :locals => { :demo => demo, :date => date }
   end
 
   post '/parse' do

@@ -83,7 +83,7 @@ main {
         }
     }
 
-    section.demo {
+    section.demo, section.paste {
         &::after {
             clear: both;
             content: "";
@@ -150,7 +150,14 @@ main {
             overflow-y: scroll;
             padding: 0.5em;
             white-space: pre-wrap;
-            width: 48.82117%;
+
+            @at-root main section.demo pre {
+              width: 48.82117%;
+            }
+
+            @at-root main section.paste pre {
+              width: 100%;
+            }
         }
 
         select {
@@ -185,6 +192,23 @@ main {
             white-space: pre-wrap;
             width: 100%;
         }
+    }
+
+    section.paste {
+      pre {
+      }
+
+      aside {
+        float: right;
+        margin-bottom: -5em;
+        opacity: 0.6;
+        padding: 0.75em 1em 1em 1em;
+        position: relative;
+
+        span {
+          display: block;
+        }
+      }
     }
 
     section.key-features {
