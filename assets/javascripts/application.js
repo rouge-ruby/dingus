@@ -9,13 +9,13 @@ const tip    = document.getElementById("save_message");
 
 // Submit function
 let submitTimer;
-const submit = function(endpoint, payload) {
+const submit = function(endpoint, payload, overwrite) {
   clearTimeout(submitTimer);
-  submitTimer = setTimeout(update, 500, endpoint, payload);
+  submitTimer = setTimeout(update, 500, endpoint, payload, overwrite);
 };
 
 // Update function
-const update = function(endpoint, payload) {
+const update = function(endpoint, payload, overwrite) {
   let request = new XMLHttpRequest();
 
   request.open("POST", endpoint);
@@ -24,7 +24,7 @@ const update = function(endpoint, payload) {
   request.onreadystatechange = function () {
     if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
       const data = JSON.parse(request.responseText);
-      source.value = data.source;
+      overwrite ? (source.value = data.source) : null;
       result.innerHTML = "<code>" + data.result + "</code>";
       flash.classList.remove("show");
       flash.innerHTML = "";
@@ -40,22 +40,24 @@ const update = function(endpoint, payload) {
 
 // Reset on language change
 lang.addEventListener("change", function(e) {
-  submit("/parse", { ver: ver.value, lang: lang.value });
+  const payload = { ver: ver.value, lang: lang.value };
+  submit("/parse", payload, true);
   history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
                             "/" + encodeURIComponent(lang.value) +
                             "/");
-});
+}, { capture: false, passive: true });
 
 // Update on source change
 source.addEventListener("input", function(e) {
-  submit("/parse", { ver: ver.value, lang: lang.value, source: source.value });
+  const payload = { ver: ver.value, lang: lang.value, source: source.value };
+  submit("/parse", payload, false);
   let draft_path = "/" + encodeURIComponent(ver.value) +
                    "/" + encodeURIComponent(lang.value) +
                    "/draft";
   if (window.location.pathname !== draft_path) {
     history.pushState({}, "", draft_path);
   }
-});
+}, { capture: false, passive: true });
 
 // Allow encoding of Unicode characters
 const utoa = function(str) {
