@@ -24,6 +24,24 @@ const clear_message = function() {
   flash.innerHTML = "";
 };
 
+// Get an error message
+const error_message = function(code) {
+  let request = new XMLHttpRequest();
+
+  request.open("GET", "/message/" + code);
+  request.setRequestHeader("Content-Type", "application/json");
+
+  request.onreadystatechange = function () {
+    if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      const data = JSON.parse(request.responseText);
+      flash.innerHTML = data.message;
+      flash.classList.add("show");
+    }
+  };
+
+  request.send();
+};
+
 // Update function
 const update = function(endpoint, payload, overwrite) {
   let request = new XMLHttpRequest();
@@ -80,22 +98,10 @@ source.addEventListener("input", function(e) {
   }
 }, { capture: false, passive: true });
 
-const error_message = function(code) {
-  let request = new XMLHttpRequest();
-
-  request.open("GET", "/message/" + code);
-  request.setRequestHeader("Content-Type", "application/json");
-
-  request.onreadystatechange = function () {
-    if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-      const data = JSON.parse(request.responseText);
-      flash.innerHTML = data.message;
-      flash.classList.add("show");
-    }
-  };
-
-  request.send();
-};
+// Scroll the highlighted window
+source.addEventListener("scroll", function(e) {
+  result.scrollTop = source.scrollTop;
+}, { capture: false, passive: true });
 
 // Allow encoding of Unicode characters
 const utoa = function(str) {
