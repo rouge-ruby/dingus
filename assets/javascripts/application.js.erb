@@ -1,21 +1,49 @@
+// Global variables
+let editing = false;
+
 // Define elements
 const flash  = document.getElementById("flash_message");
 const lang   = document.getElementById("parse_language");
 const source = document.getElementById("parse_source");
 const ver    = document.getElementById("parse_version");
 const result = document.getElementById("parse_result");
+const code   = document.getElementById("parse_code");
 const save   = document.getElementById("save_button");
 const tip    = document.getElementById("save_message");
 
 // Submit function
 let submitTimer;
-const submit = function(endpoint, payload) {
+const submit = function(endpoint, payload, overwrite) {
   clearTimeout(submitTimer);
-  submitTimer = setTimeout(update, 500, endpoint, payload);
+  submitTimer = setTimeout(update, 500, endpoint, payload, overwrite);
+};
+
+// Clear flash message
+const clear_message = function() {
+  flash.classList.remove("show");
+  flash.innerHTML = "";
+};
+
+// Get an error message
+const error_message = function(code) {
+  let request = new XMLHttpRequest();
+
+  request.open("GET", "/message/" + code);
+  request.setRequestHeader("Content-Type", "application/json");
+
+  request.onreadystatechange = function () {
+    if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      const data = JSON.parse(request.responseText);
+      flash.innerHTML = data.message;
+      flash.classList.add("show");
+    }
+  };
+
+  request.send();
 };
 
 // Update function
-const update = function(endpoint, payload) {
+const update = function(endpoint, payload, overwrite) {
   let request = new XMLHttpRequest();
 
   request.open("POST", endpoint);
@@ -23,11 +51,12 @@ const update = function(endpoint, payload) {
 
   request.onreadystatechange = function () {
     if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      clear_message();
       const data = JSON.parse(request.responseText);
-      source.value = data.source;
-      result.innerHTML = "<code>" + data.result + "</code>";
-      flash.classList.remove("show");
-      flash.innerHTML = "";
+      overwrite ? (source.value = data.source) : null;
+      result.dataset.lang = payload.lang;
+      code.innerHTML = data.result;
+      code.scrollIntoView(false);
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
@@ -40,27 +69,44 @@ const update = function(endpoint, payload) {
 
 // Reset on language change
 lang.addEventListener("change", function(e) {
-  submit("/parse", { ver: ver.value, lang: lang.value });
+  (source.value === "") ? (editing = false) : null;
+  const content = editing ? source.value : null;
+  const payload = { ver: ver.value, lang: lang.value, source: content };
+  submit("/parse", payload, !editing);
   history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
                             "/" + encodeURIComponent(lang.value) +
                             "/");
-});
+}, { capture: false, passive: true });
 
 // Update on source change
 source.addEventListener("input", function(e) {
-  submit("/parse", { ver: ver.value, lang: lang.value, source: source.value });
+  editing = true;
+  const payload = { ver: ver.value, lang: lang.value, source: source.value };
+  submit("/parse", payload, false);
   let draft_path = "/" + encodeURIComponent(ver.value) +
                    "/" + encodeURIComponent(lang.value) +
                    "/draft";
   if (window.location.pathname !== draft_path) {
     history.pushState({}, "", draft_path);
   }
-});
+  if (source.value.length > <%= Dingus::MAX_BODY_SIZE %>) {
+    save.disabled = true;
+    save.classList.add("disabled");
+  } else {
+    save.disabled = false;
+    save.classList.remove("disabled");
+  }
+}, { capture: false, passive: true });
+
+// Scroll the highlighted window
+source.addEventListener("scroll", function(e) {
+  result.scrollTop = source.scrollTop;
+}, { capture: false, passive: true });
 
 // Allow encoding of Unicode characters
 const utoa = function(str) {
   return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
-}
+};
 
 // Copy to clipboard
 const copyToClipboard = function(text) {
@@ -82,16 +128,21 @@ const copyToClipboard = function(text) {
       document.body.removeChild(textarea);
     }
   }
-}
+};
 
 // Save the snippet
 save.addEventListener("click", function(e) {
   e.preventDefault();
-  let save_path = "/" + encodeURIComponent(ver.value) +
-                  "/" + encodeURIComponent(lang.value) +
-                  "/" + utoa(source.value);
-  history.pushState({}, "", save_path);
-  copyToClipboard(window.location);
-  tip.innerHTML = "Link to snippet copied!";
-  tip.style.display = "inline-block";
-});
+  if (source.value.length > <%= Dingus::MAX_BODY_SIZE %>) {
+    error_message(413);
+  } else {
+    clear_message();
+    let save_path = "/" + encodeURIComponent(ver.value) +
+                    "/" + encodeURIComponent(lang.value) +
+                    "/" + utoa(source.value);
+    history.pushState({}, "", save_path);
+    copyToClipboard(window.location);
+    tip.innerHTML = "Link to snippet copied!";
+    tip.style.display = "inline-block";
+  }
+}, { capture: false, passive: false });
