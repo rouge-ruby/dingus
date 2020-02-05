@@ -56,9 +56,9 @@ const update = function(endpoint, payload, overwrite) {
       clear_message();
       const data = JSON.parse(request.responseText);
       overwrite ? (source.value = data.source) : null;
-      result.dataset.lang = payload.lang;
       code.innerHTML = data.result;
-      code.scrollIntoView(false);
+      result.dataset.lang = payload.lang;
+      result.scrollTop = source.scrollTop;
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
