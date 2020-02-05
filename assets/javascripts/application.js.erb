@@ -76,6 +76,7 @@ lang.addEventListener("change", function(e) {
   history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
                             "/" + encodeURIComponent(lang.value) +
                             "/");
+  tip.style.display = 'none';
 }, { capture: false, passive: true });
 
 // Update on source change
@@ -96,6 +97,7 @@ source.addEventListener("input", function(e) {
     save.disabled = false;
     save.classList.remove("disabled");
   }
+  tip.style.display = 'none';
 }, { capture: false, passive: true });
 
 // Scroll the highlighted window
