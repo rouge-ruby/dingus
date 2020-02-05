@@ -22,6 +22,8 @@ const submit = function(endpoint, payload, overwrite) {
 const clear_message = function() {
   flash.classList.remove("show");
   flash.innerHTML = "";
+  tip.classList.remove("show");
+  tip.innerHTML = "";
 };
 
 // Get an error message
@@ -54,9 +56,9 @@ const update = function(endpoint, payload, overwrite) {
       clear_message();
       const data = JSON.parse(request.responseText);
       overwrite ? (source.value = data.source) : null;
-      result.dataset.lang = payload.lang;
       code.innerHTML = data.result;
-      code.scrollIntoView(false);
+      result.dataset.lang = payload.lang;
+      result.scrollTop = source.scrollTop;
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
@@ -82,7 +84,7 @@ lang.addEventListener("change", function(e) {
 source.addEventListener("input", function(e) {
   editing = true;
   const payload = { ver: ver.value, lang: lang.value, source: source.value };
-  submit("/parse", payload, false);
+  submit("/parse", payload, !editing);
   let draft_path = "/" + encodeURIComponent(ver.value) +
                    "/" + encodeURIComponent(lang.value) +
                    "/draft";
@@ -104,8 +106,18 @@ source.addEventListener("scroll", function(e) {
 }, { capture: false, passive: true });
 
 // Allow encoding of Unicode characters
-const utoa = function(str) {
-  return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
+const urlsafe_utoa = function(str) {
+  // return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
+  comp = encodeURIComponent(str);
+  unescaped_comp = unescape(comp);
+  encoded_comp = window.btoa(unescaped_comp);
+  return encoded_comp.replace(/[+/=]/g, function(match, offset, string) {
+    switch (match) {
+      case "+": return "-";
+      case "/": return "_";
+      case "=": return "";
+    }
+  });
 };
 
 // Copy to clipboard
@@ -139,10 +151,10 @@ save.addEventListener("click", function(e) {
     clear_message();
     let save_path = "/" + encodeURIComponent(ver.value) +
                     "/" + encodeURIComponent(lang.value) +
-                    "/" + utoa(source.value);
+                    "/" + urlsafe_utoa(source.value);
     history.pushState({}, "", save_path);
     copyToClipboard(window.location);
     tip.innerHTML = "Link to snippet copied!";
-    tip.style.display = "inline-block";
+    tip.classList.add("show");
   }
 }, { capture: false, passive: false });

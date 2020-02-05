@@ -46,19 +46,6 @@ class Dingus < Sinatra::Base
     { :message => Message[params["code"].to_i] }.to_json
   end
 
-  get '/pastes/:id' do
-    paste = Legacy.paste params["id"]
-    halt 400 unless paste
-
-    ver = "v" + Loader.latest
-    lang = paste[:language]
-    source = paste[:source]
-
-    demo = Demo.new ver, lang, source
-    date = paste[:created_at].strftime("%b %e, %Y")
-    erb :paste, :locals => { :demo => demo, :date => date }
-  end
-
   post '/parse' do
     case request.content_type
     when "application/json"
@@ -83,11 +70,24 @@ class Dingus < Sinatra::Base
     end
   end
 
+  get '/pastes/:id' do
+    paste = Legacy.paste params["id"]
+    halt 400 unless paste
+
+    ver = "v" + Loader.latest
+    lang = paste[:language]
+    source = paste[:source]
+
+    demo = Demo.new ver, lang, source
+    date = paste[:created_at].strftime("%b %e, %Y")
+    erb :paste, :locals => { :demo => demo, :date => date }
+  end
+
   get '/:ver/:lang/:source?' do
     if params["source"].nil? || params["source"] == "draft"
       demo = Demo.new params["ver"], params["lang"] rescue halt 400
     else
-      source = Base64.urlsafe_decode64 params["source"]
+      source = Base64.urlsafe_decode64(params["source"]).force_encoding("utf-8")
       demo = Demo.new params["ver"], params["lang"], source rescue halt 400
     end
 
