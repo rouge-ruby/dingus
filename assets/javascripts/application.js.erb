@@ -84,7 +84,7 @@ lang.addEventListener("change", function(e) {
 source.addEventListener("input", function(e) {
   editing = true;
   const payload = { ver: ver.value, lang: lang.value, source: source.value };
-  submit("/parse", payload, false);
+  submit("/parse", payload, !editing);
   let draft_path = "/" + encodeURIComponent(ver.value) +
                    "/" + encodeURIComponent(lang.value) +
                    "/draft";
