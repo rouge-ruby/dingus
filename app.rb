@@ -87,7 +87,7 @@ class Dingus < Sinatra::Base
     if params["source"].nil? || params["source"] == "draft"
       demo = Demo.new params["ver"], params["lang"] rescue halt 400
     else
-      source = Base64.urlsafe_decode64 params["source"]
+      source = Base64.urlsafe_decode64(params["source"]).force_encoding("utf-8")
       demo = Demo.new params["ver"], params["lang"], source rescue halt 400
     end
 

@@ -106,8 +106,18 @@ source.addEventListener("scroll", function(e) {
 }, { capture: false, passive: true });
 
 // Allow encoding of Unicode characters
-const utoa = function(str) {
-  return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
+const urlsafe_utoa = function(str) {
+  // return window.btoa(unescape(encodeURIComponent(str))).replace(/=+$/, "");
+  comp = encodeURIComponent(str);
+  unescaped_comp = unescape(comp);
+  encoded_comp = window.btoa(unescaped_comp);
+  return encoded_comp.replace(/[+/=]/g, function(match, offset, string) {
+    switch (match) {
+      case "+": return "-";
+      case "/": return "_";
+      case "=": return "";
+    }
+  });
 };
 
 // Copy to clipboard
@@ -141,7 +151,7 @@ save.addEventListener("click", function(e) {
     clear_message();
     let save_path = "/" + encodeURIComponent(ver.value) +
                     "/" + encodeURIComponent(lang.value) +
-                    "/" + utoa(source.value);
+                    "/" + urlsafe_utoa(source.value);
     history.pushState({}, "", save_path);
     copyToClipboard(window.location);
     tip.innerHTML = "Link to snippet copied!";
