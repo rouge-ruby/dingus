@@ -97,6 +97,10 @@ main {
             margin-left: 2em;
             padding: 0.5em 1em;
             vertical-align: middle;
+
+            &.show {
+              display: inline-block;
+            }
         }
 
         .source {

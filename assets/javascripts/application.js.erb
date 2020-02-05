@@ -22,6 +22,8 @@ const submit = function(endpoint, payload, overwrite) {
 const clear_message = function() {
   flash.classList.remove("show");
   flash.innerHTML = "";
+  tip.classList.remove("show");
+  tip.innerHTML = "";
 };
 
 // Get an error message
@@ -143,6 +145,6 @@ save.addEventListener("click", function(e) {
     history.pushState({}, "", save_path);
     copyToClipboard(window.location);
     tip.innerHTML = "Link to snippet copied!";
-    tip.style.display = "inline-block";
+    tip.classList.add("show");
   }
 }, { capture: false, passive: false });
