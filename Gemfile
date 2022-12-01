@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Framework
-gem 'sinatra', '~>2.0', :require => 'sinatra/base'
+gem 'sinatra', '~>2.2', :require => 'sinatra/base'
 
 # Asset pipeline
 gem 'sassc', '~>2.0'
