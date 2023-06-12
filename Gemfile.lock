@@ -16,7 +16,7 @@ GEM
     minitest (5.14.0)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
-    rack (2.2.4)
+    rack (2.2.7)
     rack-protection (2.2.3)
       rack
     rake (13.0.1)
