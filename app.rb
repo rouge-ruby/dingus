@@ -2,7 +2,6 @@ require 'bundler/setup'
 Bundler.require :default
 
 require_relative 'lib/demo'
-require_relative 'lib/legacy'
 require_relative 'lib/message'
 
 require_relative 'lib/loader'
@@ -68,19 +67,6 @@ class Dingus < Sinatra::Base
       source = Base64.urlsafe_encode64 source, padding: false
       redirect to("/" + ver + "/" + lang + "/" + source)
     end
-  end
-
-  get '/pastes/:id' do
-    paste = Legacy.paste params["id"]
-    halt 400 unless paste
-
-    ver = "v" + Loader.latest
-    lang = paste[:language]
-    source = paste[:source]
-
-    demo = Demo.new ver, lang, source
-    date = paste[:created_at].strftime("%b %e, %Y")
-    erb :paste, :locals => { :demo => demo, :date => date }
   end
 
   get '/:ver/:lang/:source?' do
