@@ -1,11 +1,14 @@
 FROM ruby:3.2.2-alpine AS base
 
-RUN apk add --update --no-cache nodejs
+LABEL org.opencontainers.image.source https://github.com/rouge-ruby/dingus
+
+RUN apk add --update --no-cache nodejs \
+    && rm -rf /var/cache/apk/*
 
 # This stage is responsible for installing gems
 FROM base as dependencies
 
-RUN apk add --update --no-cache build-base
+RUN apk add --no-cache build-base
 
 COPY Gemfile Gemfile.lock ./
 
