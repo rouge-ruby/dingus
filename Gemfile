@@ -3,7 +3,8 @@
 source 'https://rubygems.org'
 
 # Framework
-gem 'sinatra', '~>2.2', :require => 'sinatra/base'
+gem 'puma', '~> 6.3.1'
+gem 'sinatra', '~> 3.1.0'
 
 # Asset pipeline
 gem 'sassc', '~>2.4.0'
