@@ -19,11 +19,15 @@ RUN bundle check || bundle install --jobs=3 --retry=3
 # This stage is what we run the app
 FROM base
 
+RUN adduser -D app
+
+USER app
+
 WORKDIR /app
 
 COPY --from=dependencies /usr/local/bundle /usr/local/bundle
 
-COPY . ./
+COPY --chown=app . ./
 
 EXPOSE 9292
 
