@@ -39,7 +39,7 @@ class LoaderTest < Minitest::Test
   end
 
   def test_latest
-    assert_equal "3.15.0", Loader.latest
+    assert_equal "4.1.3", Loader.latest
   end
 
   def test_load_with_valid_id
