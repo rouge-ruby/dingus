@@ -14,7 +14,7 @@ COPY Gemfile Gemfile.lock ./
 
 RUN bundle config set without development
 
-RUN bundle check || bundle install --jobs=3 --retry=3
+RUN bundle install --jobs=3 --retry=3
 
 # This stage is what we run the app
 FROM base
