@@ -24,6 +24,7 @@ $comment-multiline: $gray;
 $comment-preproc: $gray;
 $comment-single: $gray;
 $comment-special: $gray;
+$comment-doc: $gray;
 $deleted: $red;
 $heading: $black;
 $inserted: $green;
@@ -91,6 +92,7 @@ $literal-number-integer-long: $orange;
   .cp { color: $comment-preproc; }
   .c1 { color: $comment-single; }
   .cs { color: $comment-special; }
+  .cd { color: $comment-doc; }
   .gd { color: $deleted; }
   .ge { font-style: italic; }
   .gh { color: $heading; font-weight: bold; }
