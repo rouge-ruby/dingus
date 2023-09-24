@@ -6,8 +6,6 @@
 app = "rouge-dingus"
 primary_region = "lax"
 
-[build]
-
 [http_service]
   internal_port = 9292
   force_https = true
