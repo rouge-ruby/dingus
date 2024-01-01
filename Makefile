@@ -3,6 +3,7 @@ PROJECT   ?= rouge-dingus
 # Use git tags to set the version string
 VERSION   ?= $(shell git describe --tags --always)
 TAG       := $(VERSION)
+DEV_TAG   ?= dev
 IMAGE     := $(PROJECT):$(TAG)
 PLATFORM  := linux/amd64
 
@@ -11,7 +12,7 @@ HOST_PORT ?= 9292
 .PHONY: build-dev
 build-dev: Dockerfile
 	@docker buildx build --rm --platform=$(PLATFORM) \
-		-t "$(IMAGE)-dev" \
+		-t "$(PROJECT):$(DEV_TAG)" \
 		-f Dockerfile.dev .
 
 .PHONY: build
@@ -31,7 +32,7 @@ test:
 	@docker run --rm -it \
 		--name $(PROJECT) \
 		--volume $(PWD):/app \
-		"$(IMAGE)-dev" \
+		"$(PROJECT):$(DEV_TAG)" \
 		bundle exec rake test
 
 .PHONY: shell
@@ -39,5 +40,5 @@ shell:
 	@docker run --rm -it \
 		--name $(PROJECT) \
 		--volume $(PWD):/app \
-		"$(IMAGE)-dev" \
+		"$(PROJECT):$(DEV_TAG)" \
 		bash
