@@ -78,7 +78,7 @@ class Loader
     if File.exist?(path) && (Time.now - File.mtime(path) < 86400)
       version_nums = (defined? @versions) ? @versions : File.readlines(path, chomp: true)
     else
-      response = %x(gem query --versions --all -r -e rouge)
+      response = `gem search --versions --all -r -e rouge`
       version_nums = response.scan(/\d+\.\d+\.\d+/)
       File.write path, version_nums.join("\n")
     end
