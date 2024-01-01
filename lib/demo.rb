@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Demo
   class InvalidVersion < StandardError; end
 
@@ -25,21 +27,23 @@ class Demo
     rouge.version
   end
 
-  private def set_version(ver)
+  private
+
+  def set_version(ver)
     return Loader.get(ver) if ver == :latest
 
-    raise InvalidVersion unless ver.is_a?(String) && ver[0] == "v"
+    raise InvalidVersion unless ver.is_a?(String) && ver[0] == 'v'
 
     Loader.get ver.slice(1..-1)
   end
 
-  private def set_lexer(lang)
+  def set_lexer(lang)
     return all_lexers.sample if lang.nil?
 
     rouge::Lexer.find(lang) || all_lexers.sample
   end
 
-  private def set_source(source)
+  def set_source(source)
     source || lexer.demo
   end
 end
