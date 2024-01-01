@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 Bundler.require :default
 
@@ -16,17 +18,17 @@ class Dingus < Sinatra::Base
   set :environment, Sprockets::Environment.new
 
   # append assets paths
-  environment.append_path "assets/images"
-  environment.append_path "assets/stylesheets"
-  environment.append_path "assets/javascripts"
+  environment.append_path 'assets/images'
+  environment.append_path 'assets/stylesheets'
+  environment.append_path 'assets/javascripts'
 
   # compress assets
   environment.js_compressor  = Uglifier.new(harmony: true)
   environment.css_compressor = :scssc
 
   # get assets
-  get "/assets/*" do
-    env["PATH_INFO"].sub!("/assets", "")
+  get '/assets/*' do
+    env['PATH_INFO'].sub!('/assets', '')
     settings.environment.call(env)
   end
 
@@ -36,57 +38,69 @@ class Dingus < Sinatra::Base
   end
 
   get '/' do
-    flash = Message[params["error"].to_i]
-    erb :index, :locals => { :demo => Demo.new, :flash => flash }
+    flash = Message[params['error'].to_i]
+    erb :index, locals: { demo: Demo.new, flash: }
   end
 
   get '/message/:code' do
     content_type :json
-    { :message => Message[params["code"].to_i] }.to_json
+    { message: Message[params['code'].to_i] }.to_json
   end
 
   post '/parse' do
     case request.content_type
-    when "application/json"
+    when 'application/json'
       payload = JSON.parse request.body.read
 
-      demo = Demo.new payload["ver"],
-                      payload["lang"],
-                      payload["source"] rescue halt 400
+      demo = begin
+        Demo.new payload['ver'],
+                 payload['lang'],
+                 payload['source']
+      rescue StandardError
+        halt 400
+      end
 
       content_type :json
-      { :ver => demo.version, :source => demo.source, :result => demo.result }.to_json
+      { ver: demo.version, source: demo.source, result: demo.result }.to_json
     else
-      halt 400 if params["parse"].nil?
+      halt 400 if params['parse'].nil?
 
-      ver = params["parse"]["version"]
-      lang = params["parse"]["language"]
-      source = params["parse"]["source"]
+      ver = params['parse']['version']
+      lang = params['parse']['language']
+      source = params['parse']['source']
       halt 400 if ver.nil? || lang.nil? || source.nil?
 
       source = Base64.urlsafe_encode64 source, padding: false
-      redirect to("/" + ver + "/" + lang + "/" + source)
+      redirect to("/#{ver}/#{lang}/#{source}")
     end
   end
 
   get '/:ver/:lang/:source?' do
-    if params["source"].nil? || params["source"] == "draft"
-      demo = Demo.new params["ver"], params["lang"] rescue halt 400
+    if params['source'].nil? || params['source'] == 'draft'
+      demo = begin
+        Demo.new params['ver'], params['lang']
+      rescue StandardError
+        halt 400
+      end
     else
-      source = Base64.urlsafe_decode64(params["source"]).force_encoding("utf-8")
-      demo = Demo.new params["ver"], params["lang"], source rescue halt 400
+      source = Base64.urlsafe_decode64(params['source']).force_encoding('utf-8')
+      demo = begin
+        Demo.new params['ver'], params['lang'], source
+      rescue StandardError
+        halt 400
+      end
     end
 
-    erb :index, :locals => { :demo => demo, :flash => nil }
+    erb :index, locals: { demo:, flash: nil }
   end
 
   error 400..500 do
     case request.content_type
-    when "application/json"
+    when 'application/json'
       content_type :json
-      { :message => Message[response.status] }.to_json
+      { message: Message[response.status] }.to_json
     else
-      redirect to("/?error=" + response.status.to_s)
+      redirect to("/?error=#{response.status}")
     end
   end
 end

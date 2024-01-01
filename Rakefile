@@ -1,10 +1,12 @@
-require "bundler/setup"
-require "rake/testtask"
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-    ENV["APP_ENV"] = "test"
-      t.test_files = FileList["test/**/*_test.rb"]
+  ENV['APP_ENV'] = 'test'
+  t.test_files = FileList['test/**/*_test.rb']
 end
-desc "Run tests"
+desc 'Run tests'
 
 task default: :test

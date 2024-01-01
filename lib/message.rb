@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Message
-  MSG = {}
+  MSG = {}.freeze
 
   MSG[400] =
     "<strong>Bad Input</strong>: The input that you submitted is invalid. Please
@@ -21,8 +23,7 @@ class Message
     "<strong>Server Error</strong>: A server error occurred while processing
     your request."
 
-  def self.[](k)
-    MSG[k]
+  def self.[](key)
+    MSG[key]
   end
 end
-
