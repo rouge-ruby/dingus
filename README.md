@@ -4,15 +4,62 @@ The online dingus for the [Rouge](https://github.com/rouge-ruby/rouge) project.
 
 ## Deploying
 
-This repo is designed for deployment to [Fly.io](https://fly.io).
+This repo is designed for deployment to [Fly.io](https://fly.io). Follow the
+[instruction](https://fly.io/docs/speedrun/) on the official website to setup the
+CLI and launch the application.
 
 ## Contributing
 
+We support developing both locally and via Docker container.
+
+### Local
+
+Install all required dependencies
+
+```shell
+bundle install
+```
+
+Run all specs
+
+```shell
+bundle exec rake test
+```
+
+Run the application
+
+```shell
+bundle exec rackup
+```
+
+## Docker container
+
+Build a development image
+
+```shell
+make build-dev
+```
+
+Run the image and enter the shell
+
+```shell
+make shell
+```
+
+Build an application image
+
+```shell
+make build
+```
+
+Run the application
+
+```shell
+make run
+```
+
 If you've noticed a problem or would like to propose a change, we're always
 happy to receive contributions.
-
-To get started, run `bundle install` after cloning this repo. You should then be
-able to launch a local instance of the website by running `bundle exec rackup`.
 
 Everyone interacting in Rouge and its sub-projects' code bases is expected to follow
 the Rouge Code of Conduct.
