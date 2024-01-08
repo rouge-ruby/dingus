@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Framework
-gem 'puma', '~> 6.4.0'
+gem 'puma', '~> 6.4.2'
 gem 'sinatra', '~> 3.1.0'
 
 # Asset pipeline
