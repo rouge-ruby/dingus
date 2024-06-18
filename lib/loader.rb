@@ -7,13 +7,14 @@ class Loader
 
   LOAD_LOCK = Monitor.new
   TMP_DIR = ENV['ROUGE_VER_DIR'] || File.join(Bundler.root, 'tmp', 'rouge')
+  MAX_VERSIONS = 5
 
-  Bundler.mkdir_p TMP_DIR
+  Bundler.mkdir_p(TMP_DIR)
 
   def self.available?(ver)
     return false if ver < '1.1.0'
 
-    versions.include? ver
+    versions.include?(ver)
   end
 
   def self.cache
@@ -21,18 +22,18 @@ class Loader
   end
 
   def self.dir(ver)
-    File.join TMP_DIR, ver
+    File.join(TMP_DIR, ver)
   end
 
   def self.dir?(ver)
-    Dir.exist? dir(ver)
+    Dir.exist?(dir(ver))
   end
 
   def self.fetch(ver)
     Dir.chdir(TMP_DIR) do
       `gem fetch rouge -v #{ver}`
       `gem unpack rouge-#{ver}.gem`
-      File.delete "rouge-#{ver}.gem"
+      File.delete("rouge-#{ver}.gem")
     end
   end
 
@@ -81,13 +82,14 @@ class Loader
   end
 
   def self.versions
-    path = File.join TMP_DIR, 'available_versions'
+    path = File.join(TMP_DIR, 'available_versions')
+
     if File.exist?(path) && (Time.now - File.mtime(path) < 86_400)
-      version_nums = (defined? @versions) ? @versions : File.readlines(path, chomp: true)
+      version_nums = defined?(@versions) ? @versions : File.readlines(path, chomp: true)
     else
       response = `gem search --versions --all -r -e rouge`
-      version_nums = response.scan(/\d+\.\d+\.\d+/)
-      File.write path, version_nums.join("\n")
+      version_nums = response.scan(/\d+\.\d+\.\d+/).first(MAX_VERSIONS)
+      File.write(path, version_nums.join("\n"))
     end
 
     @versions = version_nums

@@ -23,6 +23,7 @@ build: Dockerfile
 .PHONY: run
 run:
 	@docker run --rm \
+		--platform=$(PLATFORM) \
 		--name $(PROJECT) \
 		--publish $(HOST_PORT):9292 \
 		"$(IMAGE)"
@@ -30,6 +31,7 @@ run:
 .PHONY: test
 test:
 	@docker run --rm -it \
+		--platform=$(PLATFORM) \
 		--name $(PROJECT) \
 		--volume $(PWD):/app \
 		"$(PROJECT):$(DEV_TAG)" \
@@ -38,6 +40,7 @@ test:
 .PHONY: shell
 shell:
 	@docker run --rm -it \
+		--platform=$(PLATFORM) \
 		--name $(PROJECT) \
 		--volume $(PWD):/app \
 		"$(PROJECT):$(DEV_TAG)" \

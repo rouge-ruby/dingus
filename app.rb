@@ -39,7 +39,7 @@ class Dingus < Sinatra::Base
 
   get '/' do
     flash = Message[params['error'].to_i]
-    erb :index, locals: { demo: Demo.new, flash: }
+    erb :index, locals: { demo: Demo.new, flash: flash }
   end
 
   get '/message/:code' do
@@ -91,7 +91,7 @@ class Dingus < Sinatra::Base
       end
     end
 
-    erb :index, locals: { demo:, flash: nil }
+    erb :index, locals: { demo: demo, flash: nil }
   end
 
   error 400..500 do
