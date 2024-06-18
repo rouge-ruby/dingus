@@ -7,6 +7,7 @@ class Loader
 
   LOAD_LOCK = Monitor.new
   TMP_DIR = ENV['ROUGE_VER_DIR'] || File.join(Bundler.root, 'tmp', 'rouge')
+  MAX_VERSIONS = 5
 
   Bundler.mkdir_p TMP_DIR
 
@@ -88,6 +89,7 @@ class Loader
       response = `gem search --versions --all -r -e rouge`
       version_nums = response.scan(/\d+\.\d+\.\d+/)
       File.write path, version_nums.join("\n")
+      version_nums = response.scan(/\d+\.\d+\.\d+/).first(MAX_VERSIONS)
     end
 
     @versions = version_nums
