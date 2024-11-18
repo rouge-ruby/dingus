@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 # Framework
 gem 'puma', '~> 6.4.2'
-gem 'sinatra', '~> 3.1.0'
+gem 'sinatra', '~> 4.1.0'
 
 # Asset pipeline
 gem 'base64', '~> 0.2.0'
