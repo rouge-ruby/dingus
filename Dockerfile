@@ -1,10 +1,15 @@
-FROM ruby:3.3.3-alpine AS base
+FROM ruby:3.3.8-alpine AS base
 
 LABEL org.opencontainers.image.source https://github.com/rouge-ruby/dingus
 
 RUN apk add --update --no-cache \
-    nodejs=20.13.1-r0 \
+    nodejs=22.16.0-r2 \
     && rm -rf /var/cache/apk/*
+
+ENV BUNDLER_VERSION 2.6.9
+
+RUN gem update --system \
+    && gem install bundler -v $BUNDLER_VERSION
 
 # ---------------------------------
 # This stage is responsible for installing gems
