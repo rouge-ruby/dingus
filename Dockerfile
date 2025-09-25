@@ -1,4 +1,4 @@
-FROM ruby:3.3.8-alpine AS base
+FROM ruby:3.4.6-alpine AS base
 
 LABEL org.opencontainers.image.source https://github.com/rouge-ruby/dingus
 
