@@ -12,6 +12,10 @@ gem 'sassc-embedded', '~> 1.69'
 gem 'sprockets', '~> 4.2.1'
 gem 'uglifier', '~> 4.2.0'
 
+# Standard library gems
+gem 'logger', '~> 1.7'
+gem 'ostruct', '~> 0.6.3'
+
 # Development and testing
 group :development do
   gem 'm', '~> 1.6.2'
