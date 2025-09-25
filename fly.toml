@@ -6,6 +6,12 @@
 app = "rouge-dingus"
 primary_region = "lax"
 
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "1gb"
+  cpus = 2
+  cpu_kind = "shared"
+
 [http_service]
   internal_port = 9292
   force_https = true
