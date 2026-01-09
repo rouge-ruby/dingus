@@ -1,9 +1,9 @@
-FROM ruby:3.4.6-alpine AS base
+FROM ruby:3.4.8-alpine AS base
 
 LABEL org.opencontainers.image.source=https://github.com/rouge-ruby/dingus
 
 RUN apk add --update --no-cache \
-    nodejs=22.16.0-r2 \
+    nodejs=24.11.1-r0 \
     && rm -rf /var/cache/apk/*
 
 ENV BUNDLER_VERSION=2.6.9
