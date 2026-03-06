@@ -3,26 +3,30 @@
 source 'https://rubygems.org'
 
 # Framework
-gem 'puma', '~> 6.4.2'
-gem 'sinatra', '~> 3.1.0'
+gem 'puma'
+gem 'sinatra'
 
 # Asset pipeline
-gem 'base64', '~> 0.2.0'
-gem 'sassc-embedded', '~> 1.69'
-gem 'sprockets', '~> 4.2.1'
-gem 'uglifier', '~> 4.2.0'
+gem 'base64'
+gem 'sassc-embedded'
+gem 'sprockets'
+gem 'uglifier'
 
 # Standard library gems
-gem 'logger', '~> 1.7'
-gem 'ostruct', '~> 0.6.3'
+gem 'logger'
+gem 'ostruct'
+
+gem 'bigdecimal'
+gem 'json'
 
 # Development and testing
 group :development do
-  gem 'm', '~> 1.6.2'
-  gem 'minitest', '~> 5.20.0'
-  gem 'mutex_m', '~> 0.2.0'
-  gem 'rake', '~> 13.0.6'
-  gem 'rubocop', '~> 1.59'
-  gem 'rubocop-minitest', '~> 0.34.2'
+  gem 'pry'
+  gem 'm'
+  gem 'minitest'
+  gem 'mutex_m'
+  gem 'rake'
+  gem 'rubocop'
+  gem 'rubocop-minitest'
   gem 'rubocop-performance', '~> 1.20'
 end
