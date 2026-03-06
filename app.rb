@@ -77,6 +77,16 @@ class Dingus < Sinatra::Base
     end
   end
 
+  get '/:ver' do
+    demo = begin
+      Demo.new params['ver'], nil, nil
+    rescue StandardError
+      halt 400
+    end
+
+    erb :index, locals: { demo: demo, flash: nil }
+  end
+
   get '/:ver/:lang/:source?' do
     if params['source'].nil? || params['source'] == 'draft'
       demo = begin
