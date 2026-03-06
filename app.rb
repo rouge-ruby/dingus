@@ -96,6 +96,11 @@ class Dingus < Sinatra::Base
     erb :index, locals: { demo: demo, flash: nil }
   end
 
+  # redirect paths ending in /
+  get %r(.*/) do
+    redirect to(env['PATH_INFO'].chomp('/'))
+  end
+
   error 400..500 do
     case request.content_type
     when 'application/json'
