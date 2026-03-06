@@ -22,9 +22,11 @@ class Dingus < Sinatra::Base
   environment.append_path 'assets/stylesheets'
   environment.append_path 'assets/javascripts'
 
-  # compress assets
-  environment.js_compressor  = Uglifier.new(harmony: true)
-  environment.css_compressor = :scssc
+  # [jneen] no need to compress assets for now, the site is
+  # extremely simple.
+  #
+  # environment.js_compressor  = Uglifier.new(harmony: true)
+  # environment.css_compressor = :scssc
 
   # get assets
   get '/assets/*' do
