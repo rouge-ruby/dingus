@@ -14,26 +14,6 @@ class Dingus < Sinatra::Base
   MAX_PATH_SIZE = 1900
   MAX_BODY_SIZE = 1400
 
-  # initialize new sprockets environment
-  set :environment, Sprockets::Environment.new
-
-  # append assets paths
-  environment.append_path 'assets/images'
-  environment.append_path 'assets/stylesheets'
-  environment.append_path 'assets/javascripts'
-
-  # [jneen] no need to compress assets for now, the site is
-  # extremely simple.
-  #
-  # environment.js_compressor  = Uglifier.new(harmony: true)
-  # environment.css_compressor = :scssc
-
-  # get assets
-  get '/assets/*' do
-    env['PATH_INFO'].sub!('/assets', '')
-    settings.environment.call(env)
-  end
-
   before do
     halt 413 if request.path.length > MAX_PATH_SIZE ||
                 request.content_length.to_i > MAX_BODY_SIZE
