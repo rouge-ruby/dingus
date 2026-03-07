@@ -10,6 +10,7 @@ const result = document.getElementById("parse_result");
 const code   = document.getElementById("parse_code");
 const save   = document.getElementById("save_button");
 const tip    = document.getElementById("save_message");
+const versionDisplay = document.getElementById("version_display");
 
 // Submit function
 let submitTimer;
@@ -59,6 +60,8 @@ const update = function(endpoint, payload, overwrite) {
       code.innerHTML = data.result;
       result.dataset.lang = payload.lang;
       result.scrollTop = source.scrollTop;
+
+      versionDisplay.innerText = data.display_ver;
     } else if (request.readyState === XMLHttpRequest.DONE && request.status !== 200) {
       const data = JSON.parse(request.responseText);
       flash.innerHTML = data.message;
@@ -70,7 +73,7 @@ const update = function(endpoint, payload, overwrite) {
 };
 
 // Reset on language change
-lang.addEventListener("change", function(e) {
+function doReset(e) {
   (source.value === "") ? (editing = false) : null;
   const content = editing ? source.value : null;
   const payload = { ver: ver.value, lang: lang.value, source: content };
@@ -78,7 +81,10 @@ lang.addEventListener("change", function(e) {
   history.pushState({}, "", "/" + encodeURIComponent(ver.value) +
                             "/" + encodeURIComponent(lang.value) +
                             "/");
-}, { capture: false, passive: true });
+}
+
+lang.addEventListener("change", doReset, { capture: false, passive: true });
+ver.addEventListener("change", doReset, { capture: false, passive: true });
 
 // Update on source change
 source.addEventListener("input", function(e) {
@@ -91,6 +97,11 @@ source.addEventListener("input", function(e) {
   if (window.location.pathname !== draft_path) {
     history.pushState({}, "", draft_path);
   }
+
+  checkLength();
+}, { capture: false, passive: true });
+
+function checkLength() {
   if (source.value.length > <%= Dingus::MAX_BODY_SIZE %>) {
     save.disabled = true;
     save.classList.add("disabled");
@@ -98,7 +109,7 @@ source.addEventListener("input", function(e) {
     save.disabled = false;
     save.classList.remove("disabled");
   }
-}, { capture: false, passive: true });
+}
 
 // Scroll the highlighted window
 source.addEventListener("scroll", function(e) {
@@ -158,3 +169,5 @@ save.addEventListener("click", function(e) {
     tip.classList.add("show");
   }
 }, { capture: false, passive: false });
+
+checkLength();

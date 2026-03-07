@@ -3,18 +3,30 @@
 </section>
 <section class="demo">
   <form novalidate="novalidate" class="simple_form parse" action="/parse" accept-charset="UTF-8" data-remote="true" method="post">
-    <label for="parse_source">Try some code</label>
-    <div class="source">
-      <select name="parse[language]" id="parse_language">
-      <% demo.all_lexers.each do |lexer| %>
-        <option value="<%= lexer.tag %>" <%= "selected" if lexer == demo.lexer %>><%= lexer.title %></option>
-      <% end %>
-      </select>
+    <div class="parse_input">
+      <div class="source">
+        <label for="parse_source">Try some code!</label>
+        <select name="parse[ver]" autocomplete="off" id="parse_version">
+          <% Loader.versions.each do |version| %>
+            <option value="v<%= version %>" <%= "selected" if demo.version == version %>><%= version %></option>
+          <% end %>
+        </select>
+        <select name="parse[language]" autocomplete="off" id="parse_language">
+          <% demo.all_lexers.each do |lexer| %>
+            <option value="<%= lexer.tag %>" <%= "selected" if lexer == demo.lexer %>><%= lexer.title %></option>
+          <% end %>
+        </select>
+      </div>
       <textarea id="parse_source" name="parse[source]"><%= demo.source %></textarea>
     </div>
-    <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code id="parse_code"><%= demo.result %></code></pre>
-    <button id="save_button" name="save">Save this</button>
-    <div id="save_message"></div>
-    <input type="hidden" id="parse_version" name="parse[version]" value="v<%= demo.version %>">
+    <div class="parse_output">
+      <h4>Result:</h4>
+      <pre id="parse_result" class="highlight" data-lang="<%= demo.lexer.tag %>"><code id="parse_code"><%= demo.result %></code></pre>
+    </div>
+
+    <div class="save">
+      <button id="save_button" name="save">Save this</button>
+      <div id="save_message"></div>
+    </div>
   </form>
 </section>

@@ -7,6 +7,7 @@ class Demo
 
   def initialize(ver = :latest, lang = nil, source = nil)
     @rouge = set_version ver
+    @original_ver = ver
     @lexer = set_lexer lang
     @source = set_source source
   end
@@ -24,7 +25,17 @@ class Demo
   end
 
   def version
+    return 'main' if main?
     rouge.version
+  end
+
+  def main?
+    @original_ver == 'vmain'
+  end
+
+  def display_version
+    return "main (git: #{Loader.main_hash})" if main?
+    version
   end
 
   private

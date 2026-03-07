@@ -9,6 +9,8 @@ class LoaderTest < Minitest::Test
   def setup
     Loader.send(:remove_const, :TMP_DIR)
     Loader.const_set(:TMP_DIR, File.join('test', 'data'))
+    Loader::CACHE.clear
+    Loader.setup!
   end
 
   def teardown
@@ -39,16 +41,16 @@ class LoaderTest < Minitest::Test
   end
 
   def test_latest
-    assert_equal '4.3.0', Loader.latest
+    assert_equal '4.7.0', Loader.latest
   end
 
   def test_load_with_valid_id
-    rouge = Loader.load '1.1.0'
+    rouge = Loader.get '1.1.0'
     assert_equal '1.1.0', rouge.version
   end
 
   def test_load_with_invalid_id
-    assert_raises(Loader::UnavailableVersion) { Loader.load('0') }
+    assert_raises(Loader::UnavailableVersion) { Loader.get('0') }
   end
 
   def test_versions(ver = '0.0.1')

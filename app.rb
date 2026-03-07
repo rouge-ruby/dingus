@@ -63,7 +63,13 @@ class Dingus < Sinatra::Base
       end
 
       content_type :json
-      { ver: demo.version, source: demo.source, result: demo.result }.to_json
+
+      {
+        ver: demo.version,
+        display_ver: demo.display_version,
+        source: demo.source,
+        result: demo.result,
+      }.to_json
     else
       halt 400 if params['parse'].nil?
 
