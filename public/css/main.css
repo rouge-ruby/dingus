@@ -14,6 +14,7 @@ html {
   --go-get-it: #b2fd6d; /* green */
   --dragon: #38C46D;
   --chilly: #a8e1fe;
+  --pool: #4dc5c0;
   --unicorn: #faf6e4;
   --sandy: #f6dd62; /* light yellow */
   --pink-merengue: #f696db; /* pink */
@@ -27,12 +28,12 @@ html {
 
 a {
   &:visited {
-    color: var(--dragon);
+    color: var(--pool);
   }
   &:hover {
     color: var(--go-get-it);
   }
-  color: var(--go-get-it);
+  color: var(--chilly);
   font-weight: 800;
   text-decoration: none;
   transition: color 0.1s linear;
