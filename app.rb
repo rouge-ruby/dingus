@@ -24,6 +24,8 @@ class Dingus < Sinatra::Base
 
   def make_demo(*args)
     Demo.new(*args)
+  rescue Demo::InvalidVersion
+    halt 400
   rescue StandardError => e
     request.logger.error "#{e.message}:\n#{e.backtrace.join("\n")}"
     halt 400
