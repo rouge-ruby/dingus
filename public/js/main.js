@@ -2,16 +2,7 @@ window.Dingus = (function() {
   // Global variables
   let editing = false;
 
-  // Define elements
-  const flash  = document.getElementById("flash_message");
-  const lang   = document.getElementById("parse_language");
-  const source = document.getElementById("parse_source");
-  const ver    = document.getElementById("parse_version");
-  const result = document.getElementById("parse_result");
-  const code   = document.getElementById("parse_code");
-  const save   = document.getElementById("save_button");
-  const tip    = document.getElementById("save_message");
-  const versionDisplay = document.getElementById("version_display");
+  let flash, lang, source, ver, result, code, save, tip, versionDisplay;
 
   // Submit function
   let submitTimer;
@@ -84,24 +75,6 @@ window.Dingus = (function() {
                               "/");
   }
 
-  lang.addEventListener("change", doReset, { capture: false, passive: true });
-  ver.addEventListener("change", doReset, { capture: false, passive: true });
-
-  // Update on source change
-  source.addEventListener("input", function(e) {
-    editing = true;
-    const payload = { ver: ver.value, lang: lang.value, source: source.value };
-    submit("/parse", payload, !editing);
-    let draft_path = "/" + encodeURIComponent(ver.value) +
-                     "/" + encodeURIComponent(lang.value) +
-                     "/draft";
-    if (window.location.pathname !== draft_path) {
-      history.pushState({}, "", draft_path);
-    }
-
-    checkLength();
-  }, { capture: false, passive: true });
-
   function checkLength() {
     if (source.value.length > DINGUS_MAX_BODY_SIZE) {
       save.disabled = true;
@@ -150,6 +123,35 @@ window.Dingus = (function() {
   };
 
   function setup() {
+    // Define elements
+    flash  = document.getElementById("flash_message");
+    lang   = document.getElementById("parse_language");
+    source = document.getElementById("parse_source");
+    ver    = document.getElementById("parse_version");
+    result = document.getElementById("parse_result");
+    code   = document.getElementById("parse_code");
+    save   = document.getElementById("save_button");
+    tip    = document.getElementById("save_message");
+    versionDisplay = document.getElementById("version_display");
+
+    lang.addEventListener("change", doReset, { capture: false, passive: true });
+    ver.addEventListener("change", doReset, { capture: false, passive: true });
+
+    // Update on source change
+    source.addEventListener("input", function(e) {
+      editing = true;
+      const payload = { ver: ver.value, lang: lang.value, source: source.value };
+      submit("/parse", payload, !editing);
+      let draft_path = "/" + encodeURIComponent(ver.value) +
+                       "/" + encodeURIComponent(lang.value) +
+                       "/draft";
+      if (window.location.pathname !== draft_path) {
+        history.pushState({}, "", draft_path);
+      }
+
+      checkLength();
+    }, { capture: false, passive: true });
+
     // Scroll the highlighted window
     source.addEventListener("scroll", function(e) {
       result.scrollTop = source.scrollTop;
