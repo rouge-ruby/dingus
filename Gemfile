@@ -6,12 +6,6 @@ source 'https://rubygems.org'
 gem 'puma'
 gem 'sinatra'
 
-# Asset pipeline
-gem 'base64'
-gem 'sassc-embedded'
-gem 'sprockets'
-gem 'uglifier'
-
 # Standard library gems
 gem 'logger'
 gem 'ostruct'

@@ -14,24 +14,21 @@ class Dingus < Sinatra::Base
   MAX_PATH_SIZE = 1900
   MAX_BODY_SIZE = 1400
 
-  # initialize new sprockets environment
-  set :environment, Sprockets::Environment.new
+  enable :logging
 
-  # append assets paths
-  environment.append_path 'assets/images'
-  environment.append_path 'assets/stylesheets'
-  environment.append_path 'assets/javascripts'
+  if environment == :development
+    set :static, true
+  else
+    set :static, false
+  end
 
-  # [jneen] no need to compress assets for now, the site is
-  # extremely simple.
-  #
-  # environment.js_compressor  = Uglifier.new(harmony: true)
-  # environment.css_compressor = :scssc
-
-  # get assets
-  get '/assets/*' do
-    env['PATH_INFO'].sub!('/assets', '')
-    settings.environment.call(env)
+  def make_demo(*args)
+    Demo.new(*args)
+  rescue Demo::InvalidVersion
+    halt 400
+  rescue StandardError => e
+    request.logger.error "#{e.message}:\n#{e.backtrace.join("\n")}"
+    halt 400
   end
 
   before do
@@ -54,13 +51,7 @@ class Dingus < Sinatra::Base
     when 'application/json'
       payload = JSON.parse request.body.read
 
-      demo = begin
-        Demo.new payload['ver'],
-                 payload['lang'],
-                 payload['source']
-      rescue StandardError
-        halt 400
-      end
+      demo = make_demo(payload['ver'], payload['lang'], payload['source'])
 
       content_type :json
 
@@ -84,29 +75,17 @@ class Dingus < Sinatra::Base
   end
 
   get '/:ver' do
-    demo = begin
-      Demo.new params['ver'], nil, nil
-    rescue StandardError
-      halt 400
-    end
+    demo = make_demo(params['ver'], nil, nil)
 
     erb :index, locals: { demo: demo, flash: nil }
   end
 
   get '/:ver/:lang/:source?' do
-    if params['source'].nil? || params['source'] == 'draft'
-      demo = begin
-        Demo.new params['ver'], params['lang']
-      rescue StandardError
-        halt 400
-      end
+    demo = if params['source'].nil? || params['source'] == 'draft'
+      make_demo(params['ver'], params['lang'])
     else
       source = Base64.urlsafe_decode64(params['source']).force_encoding('utf-8')
-      demo = begin
-        Demo.new params['ver'], params['lang'], source
-      rescue StandardError
-        halt 400
-      end
+      make_demo(params['ver'], params['lang'], source)
     end
 
     erb :index, locals: { demo: demo, flash: nil }

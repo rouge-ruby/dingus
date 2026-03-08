@@ -1,8 +1,6 @@
 @charset 'utf-8';
 
-@use 'theme';
-
-// palette
+/* palette */
 html {
   --cool-as-ice: #6c8b9f;
   --slate-blue: #4e5d62;
@@ -13,15 +11,16 @@ html {
   --aluminium1: #fefeec;
   --scarletred2: #cc0000;
   --butter3: #c4a000;
-  --go-get-it: #b2fd6d; // green
+  --go-get-it: #b2fd6d; /* green */
   --dragon: #38C46D;
   --chilly: #a8e1fe;
+  --pool: #4dc5c0;
   --unicorn: #faf6e4;
-  --sandy: #f6dd62; // light yellow
-  --pink-merengue: #f696db; // pink
-  --dune: #fff0a6; // super-light yellow
-  --backlit: #4df4ff; // light blue
-  --schrill: #ffb000; // rich yellow
+  --sandy: #f6dd62; /* light yellow */
+  --pink-merengue: #f696db; /* pink */
+  --dune: #fff0a6; /* super-light yellow */
+  --backlit: #4df4ff; /* light blue */
+  --schrill: #ffb000; /* rich yellow */
   --rose: #ffcfdb;
   --black: #000000;
   --rouge: #EC627A;
@@ -29,12 +28,12 @@ html {
 
 a {
   &:visited {
-    color: var(--dragon);
+    color: var(--pool);
   }
   &:hover {
     color: var(--go-get-it);
   }
-  color: var(--go-get-it);
+  color: var(--chilly);
   font-weight: 800;
   text-decoration: none;
   transition: color 0.1s linear;
@@ -55,7 +54,7 @@ header {
   margin: 0 auto 4.5em;
 
   h1 {
-    background: transparent url("/assets/logo.svg") no-repeat center;
+    background: transparent url("/img/logo.svg") no-repeat center;
     background-size: 300px;
     height: 5em;
     filter:
@@ -87,7 +86,7 @@ header {
 
 main {
   max-width: 1200px;
-  // min-width: 920px;
+  /* min-width: 920px; */
   padding: 0 1.5em;
   margin: 0 auto 4.5em;
 }
@@ -145,7 +144,7 @@ section.demo, section.paste {
   }
 
   .save {
-    // text-align: right;
+    /* text-align: right; */
     flex-basis: calc(50% - 20px);
     margin: 0 10px;
   }
@@ -198,7 +197,7 @@ section.key-features {
   li {
     margin: 20px;
 
-    // ed's circle
+    /* ed's circle */
     &:before {
       background-color: transparent;
       background-position: top center;
@@ -214,15 +213,15 @@ section.key-features {
     }
 
     &.languages:before {
-      background-image: url("/assets/icon_languages.png");
+      background-image: url("/img/icon_languages.png");
     }
 
     &.parsing:before {
-      background-image: url("/assets/icon_parsing.png");
+      background-image: url("/img/icon_parsing.png");
     }
 
     &.pygments:before {
-      background-image: url("/assets/icon_pygments.png");
+      background-image: url("/img/icon_pygments.png");
     }
 
     h3 {
