@@ -14,6 +14,15 @@ class Dingus < Sinatra::Base
   MAX_PATH_SIZE = 1900
   MAX_BODY_SIZE = 1400
 
+  enable :logging
+
+  def make_demo(*args)
+    Demo.new(*args)
+  rescue StandardError => e
+    request.logger.error "#{e.message}:\n#{e.backtrace.join("\n")}"
+    halt 400
+  end
+
   before do
     halt 413 if request.path.length > MAX_PATH_SIZE ||
                 request.content_length.to_i > MAX_BODY_SIZE
@@ -34,13 +43,7 @@ class Dingus < Sinatra::Base
     when 'application/json'
       payload = JSON.parse request.body.read
 
-      demo = begin
-        Demo.new payload['ver'],
-                 payload['lang'],
-                 payload['source']
-      rescue StandardError
-        halt 400
-      end
+      demo = make_demo(payload['ver'], payload['lang'], payload['source'])
 
       content_type :json
 
@@ -64,29 +67,17 @@ class Dingus < Sinatra::Base
   end
 
   get '/:ver' do
-    demo = begin
-      Demo.new params['ver'], nil, nil
-    rescue StandardError
-      halt 400
-    end
+    demo = make_demo(params['ver'], nil, nil)
 
     erb :index, locals: { demo: demo, flash: nil }
   end
 
   get '/:ver/:lang/:source?' do
-    if params['source'].nil? || params['source'] == 'draft'
-      demo = begin
-        Demo.new params['ver'], params['lang']
-      rescue StandardError
-        halt 400
-      end
+    demo = if params['source'].nil? || params['source'] == 'draft'
+      make_demo(params['ver'], params['lang'])
     else
       source = Base64.urlsafe_decode64(params['source']).force_encoding('utf-8')
-      demo = begin
-        Demo.new params['ver'], params['lang'], source
-      rescue StandardError
-        halt 400
-      end
+      make_demo(params['ver'], params['lang'], source)
     end
 
     erb :index, locals: { demo: demo, flash: nil }
