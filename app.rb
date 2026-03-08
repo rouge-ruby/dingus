@@ -16,6 +16,12 @@ class Dingus < Sinatra::Base
 
   enable :logging
 
+  if environment == :development
+    set :static, true
+  else
+    set :static, false
+  end
+
   def make_demo(*args)
     Demo.new(*args)
   rescue StandardError => e
