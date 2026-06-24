@@ -27,7 +27,13 @@ class Loader
         next unless File.directory?(child)
         child =~ /\Arouge-(.*)/ or next
         key = $1
-        CACHE.unsafe_set_with_time!(key, unsafe_load(key), File.mtime(child))
+        rouge = begin
+          unsafe_load(key)
+        rescue UnavailableVersion
+          next
+        end
+
+        CACHE.unsafe_set_with_time!(key, rouge, File.mtime(child))
       end
     end
   end
