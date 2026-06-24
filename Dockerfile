@@ -12,7 +12,7 @@ RUN gem update --system \
 FROM base AS dep
 
 RUN apk add --update --no-cache \
-    build-base=0.5-r3
+    build-base
 
 WORKDIR /app
 
