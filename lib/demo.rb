@@ -21,7 +21,11 @@ class Demo
   end
 
   def result
-    rouge.highlight source, lexer, 'html'
+    if rouge::Formatter.find('html_debug')
+      rouge.highlight source, lexer, 'html_debug'
+    else
+      rouge.highlight source, lexer, 'html'
+    end
   end
 
   def version
