@@ -127,10 +127,6 @@ section.demo, section.paste {
     padding: 0.5em;
   }
 
-  textarea {
-
-  }
-
   .parse_input {
     flex: 1;
     min-width: 520px;
