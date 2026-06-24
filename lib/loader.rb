@@ -113,12 +113,7 @@ class Loader
     load_silently ver
 
     if Rouge.respond_to?(:eager_load!)
-      begin
       Rouge.eager_load!
-      rescue
-        require 'pry'
-        binding.pry
-      end
     else
       patch_load Rouge
     end
