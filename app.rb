@@ -102,7 +102,8 @@ class Dingus < Sinatra::Base
       content_type :json
       { message: Message[response.status] }.to_json
     else
-      redirect to("/?error=#{response.status}")
+      # [jneen] using an html redirect so that this properly returns an HTTP error
+      erb :html_redirect, locals: { redirect_uri: "/?error=#{response.status}" }, layout: false
     end
   end
 end
