@@ -103,7 +103,7 @@ class Loader
   def self.unsafe_load(ver)
     raise UnavailableVersion unless available?(ver)
 
-    fetch ver unless dir?(ver)
+    fetch ver unless dir?(ver) && ver != 'main'
 
     begin
       Object.send(:remove_const, :Rouge)
