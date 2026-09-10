@@ -26,6 +26,12 @@ html {
   --rouge: #EC627A;
 }
 
+h2 {
+  color: var(--dune);
+  margin-bottom: 1em;
+  text-align: center;
+}
+
 a {
   &:visited {
     color: var(--pool);
@@ -70,12 +76,6 @@ header {
       height: 100%;
       opacity: 0;
     }
-  }
-
-  h2 {
-    color: var(--dune);
-    margin-bottom: 1em;
-    text-align: center;
   }
 
   h4 {
@@ -251,4 +251,33 @@ ul, ol {
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+h1, h2 { text-align: center; }
+
+.array {
+  display: flex;
+  justify-content: space-around;
+}
+
+.awards {
+  h1 {
+    color: var(--rouge);
+  }
+  dl {
+    display: flex;
+    align-items: center;
+
+    > * {
+      margin: 10px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  img {
+    height: 100px;
+  }
 }
