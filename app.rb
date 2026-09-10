@@ -18,6 +18,10 @@ class Dingus < Sinatra::Base
 
   if environment == :development
     set :static, true
+    set :static_cache_control => [:public, :must_revalidate, :max_age => 0]
+    before do
+      cache_control :public, :must_revalidate, :max_age => 0
+    end
   else
     set :static, false
   end
