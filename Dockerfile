@@ -1,6 +1,6 @@
 FROM ruby:4.0-alpine AS base
 
-LABEL org.opencontainers.image.source=https://github.com/rouge-ruby/dingus
+LABEL org.opencontainers.image.source=https://codeberg.org/rouge-ruby/dingus
 
 ARG BUNDLER_VERSION=2.6.9
 ENV BUNDLER_VERSION=$BUNDLER_VERSION

@@ -1,18 +1,10 @@
+# [THIS PROJECT HAS BEEN MOVED TO CODEBERG](https://codeberg.org/rouge-ruby/rouge)
+
 # Rouge Dingus
 
-The online dingus for the [Rouge](https://github.com/rouge-ruby/rouge) project.
+The online dingus for the [Rouge](https://codeberg.org/rouge-ruby/rouge) project.
 
-## Deploying
-
-This repo is designed for deployment to [Fly.io](https://fly.io). Follow the
-[instruction](https://fly.io/docs/speedrun/) on the official website to setup the
-CLI and launch the application.
-
-## Contributing
-
-We support developing both locally and via Docker container.
-
-### Local
+### Local Development
 
 Install all required dependencies
 
@@ -32,43 +24,17 @@ Run the application
 bundle exec rackup
 ```
 
-## Docker container
-
-Build a development image
-
-```shell
-make build-dev
-```
-
-Run the image and enter the shell
-
-```shell
-make shell
-```
-
-Build an application image
-
-```shell
-make build
-```
-
-Run the application
-
-```shell
-make run
-```
-
 If you've noticed a problem or would like to propose a change, we're always
 happy to receive contributions.
 
 Everyone interacting in Rouge and its sub-projects' code bases is expected to follow
-the Rouge Code of Conduct.
+the Rouge Code of Conduct and Contributing Guidelines.
 
 ## Development
 
 - The online dingus was originally created by Edward Loveall (@edwardloveall).
 - It was rewritten as a Sinatra app by Michael Camilleri (@pyrmont).
-- It is currently maintained by Tan Le (@tancnle).
+- It is currently maintained by Jeanine Adkisson (@jneen) and Tan Le (@tancnle).
 
 ## License
 

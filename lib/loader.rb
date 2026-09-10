@@ -58,7 +58,7 @@ class Loader
     if ver == 'main'
       Dir.chdir(TMP_DIR) do
         unless Dir.exist?('rouge-main')
-          Kernel.system 'git clone https://github.com/rouge-ruby/rouge rouge-main'
+          Kernel.system 'git clone https://codeberg.org/rouge-ruby/rouge rouge-main'
         end
 
         Dir.chdir('rouge-main') do
