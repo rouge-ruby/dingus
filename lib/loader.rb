@@ -61,7 +61,7 @@ class Loader
         end
 
         Dir.chdir('rouge-main') do
-          # Kernel.system 'git fetch && git reset --hard origin/main'
+          Kernel.system 'git fetch && git reset --hard origin/main'
           CACHE['main_hash'] = `git rev-parse origin/main`[0..7]
         end
       end
