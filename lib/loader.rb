@@ -54,6 +54,7 @@ class Loader
   end
 
   def self.fetch(ver)
+    STDERR.puts "fetching: #{ver}"
     if ver == 'main'
       Dir.chdir(TMP_DIR) do
         unless Dir.exist?('rouge-main')
