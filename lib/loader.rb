@@ -92,7 +92,7 @@ class Loader
 
   def self.main_hash
     get('main')
-    @main_hash
+    CACHE['main_hash']
   end
 
   def self.load(ver)
